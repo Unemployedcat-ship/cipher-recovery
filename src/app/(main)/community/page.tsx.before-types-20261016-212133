@@ -1,0 +1,203 @@
+'use client';
+
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { usePrivy } from '@privy-io/react-auth';
+import { useSupabase } from '@/components/SupabaseProvider';
+
+type Message = {
+  id: string;
+  identity: string;
+  content: string;
+  conviction_tier: string | null;
+  created_at: string;
+};
+
+export default function CommunityPage() {
+  const { supabase } = useSupabase();
+  const { user, authenticated, ready, login } = usePrivy();
+
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [draft, setDraft] = useState('');
+  const [postError, setPostError] = useState<string | null>(null);
+  const [isPosting, setIsPosting] = useState(false);
+  const bottomRef = useRef<HTMLDivElement | null>(null);
+
+  const displayIdentity = useMemo(() => {
+    if (!user) return null;
+    if (user.twitter?.username) return '@' + user.twitter.username;
+    if (user.email?.address) return user.email.address;
+    if (user.wallet?.address) {
+      const a = user.wallet.address;
+      return a.slice(0, 6) + '…' + a.slice(-4);
+    }
+    return 'anon';
+  }, [user]);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data, error } = await supabase
+        .from('community_intel')
+        .select('id, identity, content, conviction_tier, created_at')
+        .order('created_at', { ascending: true })
+        .limit(100);
+
+      if (cancelled) return;
+      if (error) {
+        console.error('[Community] load failed', error);
+        setLoadError(error.message);
+      } else {
+        setMessages((data ?? []) as Message[]);
+      }
+      setIsLoading(false);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [supabase]);
+
+  useEffect(() => {
+    const channel = supabase
+      .channel('community_intel_stream')
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'community_intel' },
+        (payload) => {
+          const row = payload.new as Message;
+          setMessages((prev) =>
+            prev.some((m) => m.id === row.id) ? prev : [...prev, row]
+          );
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [supabase]);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+  }, [messages.length]);
+
+  const handlePost = async () => {
+    const content = draft.trim();
+    if (!content || !displayIdentity) return;
+
+    setIsPosting(true);
+    setPostError(null);
+
+    const { error } = await supabase.from('community_intel').insert({
+      identity: displayIdentity,
+      content,
+    });
+
+    if (error) {
+      console.error('[Community] post failed', error);
+      setPostError(error.message);
+    } else {
+      setDraft('');
+    }
+    setIsPosting(false);
+  };
+
+  const booting = !ready || (authenticated && isLoading);
+
+  return (
+    <div className="max-w-4xl mx-auto p-8">
+      <header className="mb-6">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="w-1 h-8 bg-cyan-400" />
+          <h1 className="font-mono text-4xl font-bold tracking-tight text-white">
+            COMMUNITY
+          </h1>
+        </div>
+        <p className="font-mono text-sm text-zinc-500 ml-4">
+          Global intel feed. Everything here is public.
+        </p>
+      </header>
+
+      {loadError && (
+        <div className="mb-4 rounded-lg border border-red-500/40 bg-red-500/10 p-3 font-mono text-xs text-red-400">
+          Failed to load messages: {loadError}
+        </div>
+      )}
+
+      <div className="rounded-lg border border-zinc-800 bg-zinc-900/40 p-4 space-y-4 max-h-[55vh] overflow-y-auto">
+        {booting ? (
+          <div className="font-mono text-xs text-zinc-500 animate-pulse text-center py-8">
+            LOADING FEED…
+          </div>
+        ) : messages.length === 0 ? (
+          <div className="font-mono text-xs text-zinc-500 text-center py-8">
+            No messages yet. Be the first.
+          </div>
+        ) : (
+          messages.map((m) => (
+            <div key={m.id} className="flex flex-col gap-1">
+              <div className="flex items-baseline gap-2">
+                <span className="font-mono text-xs text-cyan-400">
+                  {m.identity}
+                </span>
+                <span className="font-mono text-[10px] text-zinc-600">
+                  {new Date(m.created_at).toLocaleString()}
+                </span>
+              </div>
+              <p className="font-mono text-sm text-zinc-100 whitespace-pre-wrap break-words">
+                {m.content}
+              </p>
+            </div>
+          ))
+        )}
+        <div ref={bottomRef} />
+      </div>
+
+      <div className="mt-4">
+        {!authenticated ? (
+          <button
+            onClick={login}
+            className="w-full rounded-lg border border-zinc-800 bg-zinc-900/40 p-4 font-mono text-sm text-zinc-500 hover:text-cyan-400 hover:border-cyan-400/40 transition-colors"
+          >
+            Connect identity to post
+          </button>
+        ) : (
+          <div className="rounded-lg border border-zinc-800 bg-zinc-900/40 p-3">
+            <textarea
+              value={draft}
+              onChange={(e) => setDraft(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+                  e.preventDefault();
+                  handlePost();
+                }
+              }}
+              placeholder="Say something… (Cmd+Enter to post)"
+              rows={2}
+              maxLength={500}
+              className="w-full resize-none bg-transparent border-none outline-none font-mono text-sm text-zinc-100 placeholder:text-zinc-600"
+            />
+            <div className="mt-2 flex items-center justify-between">
+              <span className="font-mono text-[10px] text-zinc-600">
+                {draft.length}/500 · as {displayIdentity}
+              </span>
+              <button
+                onClick={handlePost}
+                disabled={isPosting || draft.trim().length === 0}
+                className="rounded-md bg-cyan-400 px-4 py-2 font-mono text-xs font-bold text-black disabled:opacity-40 hover:bg-cyan-300 transition-colors"
+              >
+                {isPosting ? 'POSTING…' : 'POST'}
+              </button>
+            </div>
+            {postError && (
+              <div className="mt-2 font-mono text-xs text-red-400">
+                {postError}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

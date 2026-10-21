@@ -1,0 +1,51 @@
+{
+  "name": "rugleague-casino",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --webpack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@coral-xyz/anchor": "^0.31.1",
+    "@privy-io/react-auth": "^1.90.0",
+    "@solana/spl-token": "^0.4.15",
+    "@solana/wallet-adapter-backpack": "^0.1.14",
+    "@solana/wallet-adapter-react": "^0.15.35",
+    "@solana/web3.js": "^1.99.0",
+    "@supabase/ssr": "^0.5.2",
+    "@supabase/supabase-js": "^2.45.0",
+    "@tanstack/react-query": "^5.28.4",
+    "@zama-fhe/react-sdk": "^3.6.0",
+    "@zama-fhe/sdk": "^3.6.0",
+    "boring-avatars": "^2.0.4",
+    "bs58": "^6.0.0",
+    "clsx": "^2.1.1",
+    "framer-motion": "^14.2.0",
+    "hashvatar": "^0.1.2",
+    "lightweight-charts": "^5.2.1",
+    "lucide-react": "^1.56.0",
+    "next": "16.4.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "recharts": "^3.10.1",
+    "tailwind-merge": "^3.7.0",
+    "viem": "^2.9.1",
+    "wagmi": "^2.5.12"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
+    "@tailwindcss/turbopack": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "autoprefixer": "^10.6.1",
+    "eslint": "^9",
+    "eslint-config-next": "16.4.0",
+    "postcss": "^8.5.30",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^5"
+  }
+}

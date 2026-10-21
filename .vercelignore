@@ -1,0 +1,8 @@
+node_modules
+.next
+out
+build
+.git
+.vercel
+**/*.zip
+**/*.tar.gz

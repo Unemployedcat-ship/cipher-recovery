@@ -1,0 +1,39 @@
+'use client';
+
+import React, { type ReactNode, useEffect, useState } from 'react';
+import { PrivyProvider } from '@privy-io/react-auth';
+
+const PRIVY_APP_ID = 'cmv8k7wrx00ay0fjqu6prbwga';
+
+export default function Providers({ children }: { children: ReactNode }) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return <>{children}</>;
+
+  return (
+    <PrivyProvider
+      appId={PRIVY_APP_ID}
+      config={{
+        // EXPLICITLY ALLOW ALL METHODS:
+        loginMethods: ['email', 'wallet', 'twitter', 'google'],
+        
+        // AUTO-GENERATE WALLETS FOR EMAIL/TWITTER/GOOGLE USERS:
+        embeddedWallets: {
+          createOnLogin: 'users-without-wallets',
+        },
+        
+        appearance: {
+          theme: 'dark',
+          accentColor: '#00E5FF',
+          showWalletLoginFirst: true, // This forces the Wallet option to show up!
+        },
+      }}
+    >
+      {children}
+    </PrivyProvider>
+  );
+}

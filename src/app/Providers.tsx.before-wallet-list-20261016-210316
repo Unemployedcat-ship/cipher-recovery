@@ -1,0 +1,28 @@
+'use client';
+
+import React, { type ReactNode } from 'react';
+import { PrivyProvider } from '@privy-io/react-auth';
+import { SupabaseAuthProvider } from '@/components/SupabaseProvider';
+
+const PRIVY_APP_ID = 'cmv8k7wrx00ay0fjqu6prbwga';
+
+export default function Providers({ children }: { children: ReactNode }) {
+  return (
+    <PrivyProvider
+      appId={PRIVY_APP_ID}
+      config={{
+        loginMethods: ['email', 'wallet', 'twitter', 'google'],
+        embeddedWallets: {
+          createOnLogin: 'users-without-wallets',
+        },
+        appearance: {
+          theme: 'dark',
+          accentColor: '#00E5FF',
+          showWalletLoginFirst: true,
+        },
+      }}
+    >
+      <SupabaseAuthProvider>{children}</SupabaseAuthProvider>
+    </PrivyProvider>
+  );
+}

@@ -1,0 +1,22 @@
+import { Connection, clusterApiUrl } from '@solana/web3.js';
+
+export const SOLANA_RPC =
+  process.env.NEXT_PUBLIC_SOLANA_RPC?.trim() || clusterApiUrl('devnet');
+
+export const connection = new Connection(SOLANA_RPC, {
+  commitment: 'confirmed',
+  confirmTransactionInitialTimeout: 60_000,
+  // 🔴 FORCE HTTP POLLING: null explicitly disables WebSockets
+  wsEndpoint: null,
+});
+
+export const LAMPORTS_PER_SOL = 1_000_000_000;
+
+export const solToLamports = (sol: number | string): number =>
+  Math.round(Number(sol) * LAMPORTS_PER_SOL);
+
+export const lamportsToSol = (lamports: number | bigint): number =>
+  Number(lamports) / LAMPORTS_PER_SOL;
+
+export const shortAddr = (a?: string | null, n = 4): string =>
+  a ? `${a.slice(0, n)}...${a.slice(-n)}` : '';
