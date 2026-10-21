@@ -201,3 +201,4 @@ export async function submitBidOnChain(
 
   return sig;
 }
+export const createAuction = createAuctionOnChain;
