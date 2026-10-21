@@ -13,11 +13,8 @@ import { motion } from 'framer-motion';
 import { Keypair, PublicKey } from '@solana/web3.js';
 import { useSolanaWallet } from '@/hooks/useSolanaWallet';
 import { createAuctionOnChain, submitBidOnChain } from '@/lib/solana/actions';
-import keeperSecret from '@/lib/solana/keeper_keypair.json';
 
-const TEST_AUTHORITY_KEYPAIR = Keypair.fromSecretKey(
-  new Uint8Array(keeperSecret)
-);
+
 
 export default function LaunchPage() {
   const { user } = usePrivy();
