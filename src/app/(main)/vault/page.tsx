@@ -19,7 +19,6 @@ export default function VaultPage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [copied, setCopied] = useState(false);
   
-  // Withdraw State
   const [withdrawAddress, setWithdrawAddress] = useState('');
   const [withdrawAmount, setWithdrawAmount] = useState('');
   const [txHash, setTxHash] = useState<string | null>(null);
@@ -52,13 +51,11 @@ export default function VaultPage() {
       const pubKey = new PublicKey(withdrawAddress);
       const lamports = parseFloat(withdrawAmount) * LAMPORTS_PER_SOL;
 
-      // Check balance
       const balance = await connection.getBalance(new PublicKey(address));
-      if (balance < lamports + 5000) { // 5000 lamports for fee
+      if (balance < lamports + 5000) { 
         throw new Error("Insufficient balance for transfer + fee.");
       }
 
-      // Create transaction
       const transaction = new Transaction().add(
         SystemProgram.transfer({
           fromPubkey: new PublicKey(address),
@@ -71,7 +68,6 @@ export default function VaultPage() {
       transaction.recentBlockhash = blockhash;
       transaction.feePayer = new PublicKey(address);
 
-      // Sign with Privy Solana Provider
       const provider = await solanaWallet.getSolanaProvider();
       const signedTx = await provider.signTransaction(transaction);
       
@@ -98,10 +94,10 @@ export default function VaultPage() {
   return (
     <div className="w-full max-w-[1600px] mx-auto p-4 lg:p-6 flex flex-col gap-6 font-mono text-zinc-300 bg-[#050505] relative">
       
-      {/* Action Modals */}
+      {/* Action Modals - REMOVED BACKDROP BLUR FOR ZERO LAG */}
       {activeAction && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-          <div className="w-full max-w-md bg-[#09090B] border border-zinc-800 rounded-sm shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#000000]/95 p-4">
+          <div className="w-full max-w-md bg-[#09090B] border border-zinc-800 rounded-sm shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between p-4 border-b border-zinc-800 bg-[#050505]">
               <h2 className="text-xs font-black text-white uppercase tracking-widest flex items-center gap-2">
                 <Zap size={14} className="text-[#00FF41]"/> {activeAction}
@@ -111,7 +107,6 @@ export default function VaultPage() {
             
             <div className="p-6 flex flex-col gap-4">
               
-              {/* DEPOSIT MODAL */}
               {activeAction === 'DEPOSIT' && (
                 <>
                   <p className="text-xs text-zinc-400 text-center">Send SOL to your connected wallet address below.</p>
@@ -125,7 +120,6 @@ export default function VaultPage() {
                 </>
               )}
 
-              {/* WITHDRAW MODAL */}
               {activeAction === 'WITHDRAW' && (
                 <>
                   {txHash ? (
@@ -158,7 +152,6 @@ export default function VaultPage() {
                 </>
               )}
 
-              {/* REFERRAL MODAL */}
               {activeAction === 'REFERRAL' && (
                 <>
                   <p className="text-xs text-zinc-400 text-center">Share your referral link and earn 1% of your friends' trading fees forever.</p>
@@ -198,7 +191,7 @@ export default function VaultPage() {
         </div>
       </div>
 
-      {/* Top Stats Grid */}
+      {/* Top Stats Grid - Removed heavy shadows */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="border border-zinc-800 bg-[#09090B] p-4 rounded-sm relative overflow-hidden group">
           <div className="text-[9px] text-zinc-500 font-black tracking-widest flex items-center gap-1 mb-1">
@@ -238,7 +231,7 @@ export default function VaultPage() {
         
         {/* Left Column */}
         <div className="xl:col-span-2 flex flex-col gap-6">
-          <div className="border border-zinc-800 bg-[#09090B] rounded-sm p-5 relative overflow-hidden shadow-[0_0_20px_rgba(0,0,0,0.5)]">
+          <div className="border border-zinc-800 bg-[#09090B] rounded-sm p-5 relative overflow-hidden">
             <div className="flex justify-between items-start mb-6">
               <div>
                 <div className="text-[10px] text-zinc-500 font-black tracking-widest">PORTFOLIO PERFORMANCE</div>
@@ -255,7 +248,7 @@ export default function VaultPage() {
             </div>
           </div>
 
-          <div className="border border-zinc-800 bg-[#09090B] rounded-sm flex flex-col overflow-hidden shadow-[0_0_20px_rgba(0,0,0,0.5)]">
+          <div className="border border-zinc-800 bg-[#09090B] rounded-sm flex flex-col overflow-hidden">
             <div className="flex border-b border-zinc-800 bg-[#050505]">
               <button onClick={() => setActiveTab('launches')} className={`px-6 py-4 text-xs font-black uppercase tracking-widest flex items-center gap-2 transition-colors border-b-2 ${activeTab === 'launches' ? 'border-[#00FF41] text-white bg-[#111116]' : 'border-transparent text-zinc-500 hover:text-white'}`}>
                 <Activity size={14} /> MY LAUNCHES (1)
@@ -336,7 +329,7 @@ export default function VaultPage() {
 
         {/* Right Sidebar */}
         <div className="xl:col-span-1 flex flex-col gap-6">
-          <div className="border border-zinc-800 bg-[#09090B] rounded-sm p-5 shadow-[0_0_20px_rgba(0,0,0,0.5)]">
+          <div className="border border-zinc-800 bg-[#09090B] rounded-sm p-5">
             <h2 className="text-[10px] font-black text-white mb-6 uppercase tracking-widest flex items-center gap-2">
               <Landmark size={12} className="text-[#00FF41]"/> ASSET ALLOCATION
             </h2>
@@ -362,7 +355,7 @@ export default function VaultPage() {
             </div>
           </div>
 
-          <div className="border border-zinc-800 bg-[#09090B] rounded-sm p-5 shadow-[0_0_20px_rgba(0,0,0,0.5)]">
+          <div className="border border-zinc-800 bg-[#09090B] rounded-sm p-5">
             <h2 className="text-[10px] font-black text-white mb-4 uppercase tracking-widest flex items-center gap-2">
               <Zap size={12} className="text-[#00FF41]"/> QUICK ACTIONS
             </h2>
@@ -386,7 +379,7 @@ export default function VaultPage() {
             </div>
           </div>
 
-          <div className="border border-zinc-800 bg-[#09090B] rounded-sm p-5 shadow-[0_0_20px_rgba(0,0,0,0.5)]">
+          <div className="border border-zinc-800 bg-[#09090B] rounded-sm p-5">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-[10px] font-black text-white uppercase tracking-widest flex items-center gap-2">
                 <Clock size={12} className="text-zinc-400"/> RECENT ACTIVITY
