@@ -6,7 +6,7 @@ export default function TerminalPage() {
   return (
     <div className="w-full h-[calc(100vh-100px)] p-4 lg:p-6 flex flex-col gap-4 font-mono text-zinc-300 bg-[#050505] overflow-hidden">
       
-      {/* Top Header Bar - fixed height */}
+      {/* Top Header Bar */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center border border-zinc-800 bg-[#09090B] p-3 rounded-sm relative overflow-hidden gap-4 shrink-0">
         <div className="absolute top-0 left-0 w-1/4 h-[2px] bg-gradient-to-r from-[#00FF41] to-transparent"></div>
         <div>
@@ -24,14 +24,14 @@ export default function TerminalPage() {
         </div>
       </div>
 
-      {/* Main Grid Area - fills remaining space */}
-      <div className="flex-1 grid grid-cols-1 xl:grid-cols-3 gap-4 overflow-hidden min-h-0">
+      {/* Main Grid */}
+      <div className="flex-1 flex flex-col xl:flex-row gap-4 overflow-hidden min-h-0">
         
         {/* Left Column */}
-        <div className="xl:col-span-2 flex flex-col gap-4 h-full overflow-hidden">
+        <div className="flex-1 flex flex-col gap-4 min-w-0 min-h-0">
           
-          {/* Chart Box */}
-          <div className="flex-1 border border-zinc-800 bg-[#09090B] rounded-sm p-4 relative flex flex-col shadow-[0_0_20px_rgba(0,0,0,0.5)] min-h-0">
+          {/* Chart Box - locked to remaining height */}
+          <div className="flex-1 border border-zinc-800 bg-[#09090B] rounded-sm p-4 relative flex flex-col shadow-[0_0_20px_rgba(0,0,0,0.5)] min-h-0 overflow-hidden">
             <div className="flex justify-between items-start mb-2 shrink-0">
               <div>
                 <div className="text-[10px] text-zinc-500 font-black tracking-widest">TOTAL PROTOCOL VOLUME</div>
@@ -40,13 +40,13 @@ export default function TerminalPage() {
                 </div>
               </div>
             </div>
-            <div className="flex-1 w-full relative min-h-0">
+            <div className="flex-1 w-full min-h-0">
               <TradingChart />
             </div>
           </div>
 
-          {/* Top Gainers Table - fixed height */}
-          <div className="h-[220px] shrink-0 border border-zinc-800 bg-[#09090B] rounded-sm flex flex-col overflow-hidden">
+          {/* Top Gainers - Fixed height to prevent overlap */}
+          <div className="h-[200px] shrink-0 border border-zinc-800 bg-[#09090B] rounded-sm flex flex-col overflow-hidden">
             <div className="flex justify-between items-center p-3 border-b border-zinc-800 bg-[#050505] shrink-0">
               <h2 className="text-[10px] font-black text-white flex items-center gap-2 uppercase tracking-widest"><TrendingUp size={12} className="text-[#00FF41]"/> TOP GAINERS</h2>
             </div>
@@ -78,7 +78,7 @@ export default function TerminalPage() {
         </div>
 
         {/* Right Column */}
-        <div className="xl:col-span-1 flex flex-col gap-4 h-full overflow-hidden">
+        <div className="w-full xl:w-[350px] flex flex-col gap-4 shrink-0 min-h-0">
           
           {/* Live Tape */}
           <div className="flex-1 border border-zinc-800 bg-[#09090B] rounded-sm flex flex-col overflow-hidden shadow-[0_0_20px_rgba(0,0,0,0.5)] min-h-0">
@@ -104,8 +104,6 @@ export default function TerminalPage() {
                 { time: '12:21:30', type: 'BUY', price: '0.000040', amt: '0.15', color: 'text-[#00FF41]', bg: 'bg-[#00FF41]/5' },
                 { time: '12:21:12', type: 'SELL', price: '0.000039', amt: '1.00', color: 'text-red-400', bg: 'bg-red-500/5' },
                 { time: '12:20:58', type: 'BUY', price: '0.000041', amt: '5.00', color: 'text-[#00FF41]', bg: 'bg-[#00FF41]/5' },
-                { time: '12:20:44', type: 'BUY', price: '0.000041', amt: '0.80', color: 'text-[#00FF41]', bg: 'bg-[#00FF41]/5' },
-                { time: '12:20:31', type: 'SELL', price: '0.000038', amt: '2.50', color: 'text-red-400', bg: 'bg-red-500/5' },
               ].map((trade, i) => (
                 <div key={i} className={`grid grid-cols-4 px-3 py-1.5 border-b border-zinc-800/30 hover:bg-zinc-800 transition-colors cursor-default ${trade.bg}`}>
                   <div className="col-span-1 text-zinc-500">{trade.time}</div>
@@ -123,7 +121,7 @@ export default function TerminalPage() {
               <h2 className="text-[10px] font-black text-white flex items-center gap-2 uppercase tracking-widest"><List size={12} className="text-zinc-400"/> ORDER BOOK</h2>
             </div>
             
-            <div className="flex-1 flex flex-col justify-between p-3 overflow-hidden">
+            <div className="flex-1 flex flex-col p-3 overflow-y-auto">
                <div className="space-y-0.5">
                   {[
                     { price: 0.000045, amount: 18, total: 18 },

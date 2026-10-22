@@ -49,7 +49,6 @@ export default function DarkPoolDetailPage() {
         <div className="absolute top-0 left-0 w-1/4 h-[2px] bg-gradient-to-r from-[#00FF41] to-transparent"></div>
         
         <div className="flex items-center gap-6 z-10">
-          {/* Token Image - PERFECT CIRCLE */}
           <div className="w-24 h-24 shrink-0 rounded-full bg-[#111116] border-[3px] border-[#00FF41] flex items-center justify-center text-3xl font-black text-[#00FF41] shadow-[0_0_30px_rgba(0,255,65,0.2)]">
             UC
           </div>
