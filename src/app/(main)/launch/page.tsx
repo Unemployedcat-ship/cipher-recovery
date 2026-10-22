@@ -488,7 +488,7 @@ export default function LaunchPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <h4 className="text-amber-400 font-mono text-sm font-bold flex items-center gap-2">
-                    <Flame size={14} /> DEV BOOTSTRAP (REQUIRED)
+                    <Flame size={14} /> DEV BOOTSTRAP (OPTIONAL)
                   </h4>
                   <p className="text-[10px] font-mono text-slate-400 mt-1 max-w-sm">
                     Seed your own pool. This SOL goes directly into the vault and
@@ -511,6 +511,12 @@ export default function LaunchPage() {
                   SOL
                 </span>
               </div>
+              <div className="mt-4 p-3 rounded bg-cyan-950/30 border border-cyan-900/50">
+                <p className="text-[11px] text-cyan-400 font-mono">
+                  💡 <strong>THE FAIR EDGE:</strong> If you don't seed this pool, the token launches in the <em>Community Bootstrap Phase</em>. The first traders set the price. Once trading is live, anyone can add SOL to the liquidity pool, and it will be instantly burned to protect the chart.
+                </p>
+              </div>
+
             </div>
 
             <div className="bg-emerald-950/20 border border-emerald-900/30 p-4 rounded-xl flex items-start gap-3">
@@ -520,7 +526,7 @@ export default function LaunchPage() {
                   ANTI-BOT LAUNCH FEE
                 </h4>
                 <p className="text-[10px] font-mono text-slate-400">
-                  A one-time fee of <strong>0.02 SOL</strong> is required to
+                  A one-time fee of <strong>0.02 SOL</strong> is to
                   deploy.
                 </p>
               </div>
@@ -544,7 +550,7 @@ export default function LaunchPage() {
                     <Loader2 className="animate-spin" size={16} /> DEPLOYING...
                   </>
                 ) : (
-                  'CONFIRM LAUNCH'
+                  'LAUNCH FAIR-DEGEN'
                 )}
               </button>
             </div>
