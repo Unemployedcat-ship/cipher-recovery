@@ -6,20 +6,68 @@ import PortfolioChart from '@/components/PortfolioChart';
 import { 
   Wallet, ShieldCheck, ArrowUpRight, Activity, TrendingUp, 
   Droplets, BarChart3, Download, RefreshCcw, Landmark, 
-  Zap, Clock, ArrowDownRight, ArrowUpRightSquare, Flame, Target
+  Zap, Clock, ArrowDownRight, ArrowUpRightSquare, Flame, X, Check
 } from 'lucide-react';
 
 export default function VaultPage() {
   const [activeTab, setActiveTab] = useState<'launches' | 'positions'>('launches');
+  const [activeAction, setActiveAction] = useState<string | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
 
-  // Mock data
   const mockPortfolioValue = 1337.12;
   const mockPnl = 337.12;
   const mockPnlPercent = 33.71;
 
+  const handleActionClick = (action: string) => {
+    setActiveAction(action);
+  };
+
+  const handleExecuteAction = () => {
+    setIsProcessing(true);
+    setTimeout(() => {
+      setIsProcessing(false);
+      setActiveAction(null);
+      alert(`Transaction Successful! (Mocked for ${activeAction})`);
+    }, 1500);
+  };
+
   return (
-    <div className="w-full max-w-[1600px] mx-auto p-4 lg:p-6 flex flex-col gap-6 font-mono text-zinc-300 bg-[#050505]">
+    <div className="w-full max-w-[1600px] mx-auto p-4 lg:p-6 flex flex-col gap-6 font-mono text-zinc-300 bg-[#050505] relative">
       
+      {/* Action Modal */}
+      {activeAction && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+          <div className="w-full max-w-md bg-[#09090B] border border-zinc-800 rounded-sm shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between p-4 border-b border-zinc-800 bg-[#050505]">
+              <h2 className="text-xs font-black text-white uppercase tracking-widest flex items-center gap-2">
+                <Zap size={14} className="text-[#00FF41]"/> {activeAction}
+              </h2>
+              <button onClick={() => setActiveAction(null)} className="text-zinc-500 hover:text-white transition-colors"><X size={16}/></button>
+            </div>
+            <div className="p-6 flex flex-col gap-4">
+              <div>
+                <label className="text-[10px] text-zinc-500 font-black tracking-widest mb-1 block">AMOUNT</label>
+                <div className="relative">
+                  <input type="number" placeholder="0.00" className="w-full bg-[#050505] border border-zinc-800 rounded-sm px-4 py-3 text-lg font-black text-white focus:outline-none focus:border-[#00FF41]" />
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-black text-[#00FF41]">SOL</span>
+                </div>
+              </div>
+              <button 
+                onClick={handleExecuteAction}
+                disabled={isProcessing}
+                className="w-full rounded-sm bg-[#00FF41] py-3 text-[10px] font-black text-black hover:bg-[#00e03a] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+              >
+                {isProcessing ? (
+                  <span className="flex items-center gap-2"><RefreshCcw size={14} className="animate-spin"/> PROCESSING...</span>
+                ) : (
+                  <span className="flex items-center gap-2"><Check size={14}/> CONFIRM TRANSACTION</span>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end border-b border-zinc-800 pb-6 gap-4 relative">
         <div className="absolute bottom-0 left-0 w-1/4 h-[2px] bg-gradient-to-r from-[#00FF41] to-transparent"></div>
@@ -33,10 +81,10 @@ export default function VaultPage() {
         </div>
         
         <div className="flex items-center gap-3">
-          <button className="rounded-sm border border-zinc-800 bg-[#09090B] px-4 py-2 text-xs font-black text-zinc-400 hover:text-white transition-colors flex items-center gap-2">
+          <Link href="/vault/activity" className="rounded-sm border border-zinc-800 bg-[#09090B] px-4 py-2 text-xs font-black text-zinc-400 hover:text-white transition-colors flex items-center gap-2">
             <Download size={14} /> EXPORT
-          </button>
-          <button className="rounded-sm bg-[#00FF41] px-6 py-2 text-xs font-black text-black hover:bg-[#00e03a] transition-all shadow-[0_0_20px_rgba(0,255,65,0.2)] flex items-center gap-2">
+          </Link>
+          <button onClick={() => handleActionClick('DEPOSIT')} className="rounded-sm bg-[#00FF41] px-6 py-2 text-xs font-black text-black hover:bg-[#00e03a] transition-all shadow-[0_0_20px_rgba(0,255,65,0.2)] flex items-center gap-2">
             <Wallet size={14} /> DEPOSIT
           </button>
         </div>
@@ -53,27 +101,20 @@ export default function VaultPage() {
             <span className="h-1.5 w-1.5 bg-[#00FF41] rounded-full animate-pulse"></span> Devnet Connected
           </div>
         </div>
-
         <div className="border border-zinc-800 bg-[#09090B] p-4 rounded-sm relative overflow-hidden group">
           <div className="text-[9px] text-zinc-500 font-black tracking-widest flex items-center gap-1 mb-1">
             <Activity size={10} /> TOTAL INVESTED
           </div>
           <div className="text-2xl font-black text-white">1.00 SOL</div>
-          <div className="mt-2 text-[10px] text-zinc-500">
-            Across 3 active pools
-          </div>
+          <div className="mt-2 text-[10px] text-zinc-500">Across 3 active pools</div>
         </div>
-
         <div className="border border-zinc-800 bg-[#09090B] p-4 rounded-sm relative overflow-hidden group">
           <div className="text-[9px] text-zinc-500 font-black tracking-widest flex items-center gap-1 mb-1">
             <BarChart3 size={10} /> PORTFOLIO VALUE
           </div>
           <div className="text-2xl font-black text-[#00FF41]">${mockPortfolioValue.toLocaleString()}</div>
-          <div className="mt-2 text-[10px] text-zinc-500">
-            Updated 12s ago
-          </div>
+          <div className="mt-2 text-[10px] text-zinc-500">Updated 12s ago</div>
         </div>
-
         <div className="border border-zinc-800 bg-[#09090B] p-4 rounded-sm relative overflow-hidden group">
           <div className="text-[9px] text-zinc-500 font-black tracking-widest flex items-center gap-1 mb-1">
             <TrendingUp size={10} /> UNREALIZED PNL
@@ -81,9 +122,7 @@ export default function VaultPage() {
           <div className="text-2xl font-black text-[#00FF41] flex items-center gap-2">
             +${mockPnl.toLocaleString()} <span className="text-sm">({mockPnlPercent}%)</span>
           </div>
-          <div className="mt-2 text-[10px] text-zinc-500">
-            Since inception
-          </div>
+          <div className="mt-2 text-[10px] text-zinc-500">Since inception</div>
         </div>
       </div>
 
@@ -91,8 +130,6 @@ export default function VaultPage() {
         
         {/* Left Column */}
         <div className="xl:col-span-2 flex flex-col gap-6">
-          
-          {/* Portfolio Chart */}
           <div className="border border-zinc-800 bg-[#09090B] rounded-sm p-5 relative overflow-hidden shadow-[0_0_20px_rgba(0,0,0,0.5)]">
             <div className="flex justify-between items-start mb-6">
               <div>
@@ -110,7 +147,6 @@ export default function VaultPage() {
             </div>
           </div>
 
-          {/* Asset Table */}
           <div className="border border-zinc-800 bg-[#09090B] rounded-sm flex flex-col overflow-hidden shadow-[0_0_20px_rgba(0,0,0,0.5)]">
             <div className="flex border-b border-zinc-800 bg-[#050505]">
               <button 
@@ -148,8 +184,7 @@ export default function VaultPage() {
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
-                {/* Mock Position 1 */}
-                <div className="group border border-zinc-800 bg-[#050505] rounded-sm p-4 hover:border-[#00FF41]/50 transition-all block">
+                <div className="group border border-zinc-800 bg-[#050505] rounded-sm p-4 hover:border-[#00FF41]/50 transition-all block cursor-pointer" onClick={() => handleActionClick('CLAIM REWARDS')}>
                   <div className="flex items-center gap-3 mb-3">
                     <div className="h-10 w-10 bg-[#111116] border border-zinc-700 flex items-center justify-center font-black text-[#00FF41] rounded-md">FA</div>
                     <div>
@@ -171,8 +206,7 @@ export default function VaultPage() {
                   </div>
                 </div>
 
-                {/* Mock Position 2 */}
-                <div className="group border border-zinc-800 bg-[#050505] rounded-sm p-4 hover:border-[#00FF41]/50 transition-all block">
+                <div className="group border border-zinc-800 bg-[#050505] rounded-sm p-4 hover:border-[#00FF41]/50 transition-all block cursor-pointer" onClick={() => handleActionClick('MANAGE POSITION')}>
                   <div className="flex items-center gap-3 mb-3">
                     <div className="h-10 w-10 bg-[#111116] border border-zinc-700 flex items-center justify-center font-black text-[#00FF41] rounded-md">DK</div>
                     <div>
@@ -201,13 +235,10 @@ export default function VaultPage() {
 
         {/* Right Sidebar */}
         <div className="xl:col-span-1 flex flex-col gap-6">
-          
-          {/* Asset Allocation */}
           <div className="border border-zinc-800 bg-[#09090B] rounded-sm p-5 shadow-[0_0_20px_rgba(0,0,0,0.5)]">
             <h2 className="text-[10px] font-black text-white mb-6 uppercase tracking-widest flex items-center gap-2">
               <Landmark size={12} className="text-[#00FF41]"/> ASSET ALLOCATION
             </h2>
-            
             <div className="flex items-center justify-center h-40 mb-6 relative">
                <svg viewBox="0 0 100 100" className="w-32 h-32 -rotate-90">
                  <circle cx="50" cy="50" r="40" fill="transparent" stroke="#27272a" strokeWidth="8" />
@@ -218,7 +249,6 @@ export default function VaultPage() {
                  <div className="text-lg font-black text-white">$1,337</div>
                </div>
             </div>
-
             <div className="space-y-3">
               <div className="flex justify-between items-center text-xs">
                 <span className="flex items-center gap-2 text-zinc-400"><span className="h-2 w-2 bg-[#00FF41] rounded-sm"></span> SOL</span>
@@ -231,32 +261,30 @@ export default function VaultPage() {
             </div>
           </div>
 
-          {/* Quick Actions */}
           <div className="border border-zinc-800 bg-[#09090B] rounded-sm p-5 shadow-[0_0_20px_rgba(0,0,0,0.5)]">
             <h2 className="text-[10px] font-black text-white mb-4 uppercase tracking-widest flex items-center gap-2">
               <Zap size={12} className="text-[#00FF41]"/> QUICK ACTIONS
             </h2>
             <div className="grid grid-cols-2 gap-2">
-              <button className="flex flex-col items-center justify-center p-3 border border-zinc-800 rounded-sm hover:border-[#00FF41]/50 hover:bg-[#00FF41]/5 transition-all group">
+              <button onClick={() => handleActionClick('DEPOSIT')} className="flex flex-col items-center justify-center p-3 border border-zinc-800 rounded-sm hover:border-[#00FF41]/50 hover:bg-[#00FF41]/5 transition-all group">
                 <ArrowDownRight size={16} className="text-zinc-500 group-hover:text-[#00FF41] mb-1" />
                 <span className="text-[10px] font-bold text-zinc-300 group-hover:text-white">DEPOSIT</span>
               </button>
-              <button className="flex flex-col items-center justify-center p-3 border border-zinc-800 rounded-sm hover:border-[#00FF41]/50 hover:bg-[#00FF41]/5 transition-all group">
+              <button onClick={() => handleActionClick('WITHDRAW')} className="flex flex-col items-center justify-center p-3 border border-zinc-800 rounded-sm hover:border-[#00FF41]/50 hover:bg-[#00FF41]/5 transition-all group">
                 <ArrowUpRight size={16} className="text-zinc-500 group-hover:text-[#00FF41] mb-1" />
                 <span className="text-[10px] font-bold text-zinc-300 group-hover:text-white">WITHDRAW</span>
               </button>
-              <button className="flex flex-col items-center justify-center p-3 border border-zinc-800 rounded-sm hover:border-[#00FF41]/50 hover:bg-[#00FF41]/5 transition-all group">
+              <button onClick={() => handleActionClick('BURN LP')} className="flex flex-col items-center justify-center p-3 border border-zinc-800 rounded-sm hover:border-[#00FF41]/50 hover:bg-[#00FF41]/5 transition-all group">
                 <Flame size={16} className="text-zinc-500 group-hover:text-[#00FF41] mb-1" />
                 <span className="text-[10px] font-bold text-zinc-300 group-hover:text-white">BURN LP</span>
               </button>
-              <button className="flex flex-col items-center justify-center p-3 border border-zinc-800 rounded-sm hover:border-[#00FF41]/50 hover:bg-[#00FF41]/5 transition-all group">
+              <button onClick={() => handleActionClick('BRIDGE ASSETS')} className="flex flex-col items-center justify-center p-3 border border-zinc-800 rounded-sm hover:border-[#00FF41]/50 hover:bg-[#00FF41]/5 transition-all group">
                 <RefreshCcw size={16} className="text-zinc-500 group-hover:text-[#00FF41] mb-1" />
                 <span className="text-[10px] font-bold text-zinc-300 group-hover:text-white">BRIDGE</span>
               </button>
             </div>
           </div>
 
-          {/* Recent Activity Ledger */}
           <div className="border border-zinc-800 bg-[#09090B] rounded-sm p-5 shadow-[0_0_20px_rgba(0,0,0,0.5)]">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-[10px] font-black text-white uppercase tracking-widest flex items-center gap-2">
@@ -264,7 +292,6 @@ export default function VaultPage() {
               </h2>
               <Link href="/vault/activity" className="text-[9px] text-[#00FF41] hover:underline cursor-pointer">VIEW ALL</Link>
             </div>
-            
             <div className="space-y-3">
               <div className="flex justify-between items-center group cursor-pointer">
                 <div className="flex gap-3 items-center">
@@ -279,7 +306,6 @@ export default function VaultPage() {
                   <div className="text-[9px] text-[#00FF41] font-mono">SUCCESS</div>
                 </div>
               </div>
-              
               <div className="flex justify-between items-center group cursor-pointer">
                 <div className="flex gap-3 items-center">
                   <div className="h-8 w-8 rounded-sm bg-[#FF00FF]/10 border border-[#FF00FF]/30 flex items-center justify-center text-[#FF00FF]"><Zap size={14}/></div>
@@ -295,7 +321,6 @@ export default function VaultPage() {
               </div>
             </div>
           </div>
-
         </div>
 
       </div>

@@ -1,7 +1,8 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Clock, ArrowDownRight, ArrowUpRight, Zap, CheckCircle2, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Clock, ArrowDownRight, ArrowUpRight, Zap, CheckCircle2, ExternalLink, Rocket, Download } from 'lucide-react';
 
 export default function ActivityPage() {
   const mockActivity = [
@@ -12,22 +13,39 @@ export default function ActivityPage() {
     { id: '0x3d2c...9b8a', type: 'WITHDRAW', amount: '-1.00 SOL', date: '4 days ago', status: 'SUCCESS', icon: ArrowUpRight, color: 'text-red-400', bg: 'bg-red-500/10' },
   ];
 
+  const handleExport = () => {
+    const headers = "ID,Type,Amount,Date,Status\n";
+    const rows = mockActivity.map(tx => `${tx.id},${tx.type},${tx.amount},${tx.date},${tx.status}`).join("\n");
+    const blob = new Blob([headers + rows], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.setAttribute('href', url);
+    a.setAttribute('download', 'fairdegens-activity.csv');
+    a.click();
+  };
+
   return (
     <div className="w-full max-w-[1200px] mx-auto p-4 lg:p-8 flex flex-col gap-6 font-mono text-zinc-300 bg-[#050505] min-h-screen">
       
       {/* Header */}
-      <div className="flex items-center gap-4 shrink-0 border-b border-zinc-800 pb-6">
-        <Link href="/vault" className="h-10 w-10 border border-zinc-800 bg-[#09090B] flex items-center justify-center rounded-sm hover:border-[#00FF41] hover:text-[#00FF41] transition-colors">
-          <ArrowLeft size={16} />
-        </Link>
-        <div>
-          <div className="flex items-center gap-2 text-[9px] tracking-[0.3em] text-[#00FF41] mb-1 font-black">
-            <Clock className="h-3 w-3" /> TRANSACTION LEDGER
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shrink-0 border-b border-zinc-800 pb-6">
+        <div className="flex items-center gap-4">
+          <Link href="/vault" className="h-10 w-10 border border-zinc-800 bg-[#09090B] flex items-center justify-center rounded-sm hover:border-[#00FF41] hover:text-[#00FF41] transition-colors">
+            <ArrowLeft size={16} />
+          </Link>
+          <div>
+            <div className="flex items-center gap-2 text-[9px] tracking-[0.3em] text-[#00FF41] mb-1 font-black">
+              <Clock className="h-3 w-3" /> TRANSACTION LEDGER
+            </div>
+            <h1 className="text-2xl font-black tracking-tight text-white uppercase">
+              ACTIVITY LOG
+            </h1>
           </div>
-          <h1 className="text-2xl font-black tracking-tight text-white uppercase">
-            ACTIVITY LOG
-          </h1>
         </div>
+        
+        <button onClick={handleExport} className="rounded-sm border border-zinc-800 bg-[#09090B] px-4 py-2 text-xs font-black text-zinc-400 hover:text-white transition-colors flex items-center gap-2">
+          <Download size={14} /> EXPORT CSV
+        </button>
       </div>
 
       {/* Ledger Table */}

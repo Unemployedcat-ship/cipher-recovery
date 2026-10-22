@@ -14,6 +14,8 @@ export default function DarkPoolDetailPage() {
   const [panelMode, setPanelMode] = useState<'bid' | 'liquidity' | 'holders'>('bid');
   const [amount, setAmount] = useState('');
   const [copied, setCopied] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [txSuccess, setTxSuccess] = useState(false);
 
   const mockAddress = "7GEi...q9q7W";
 
@@ -21,6 +23,17 @@ export default function DarkPoolDetailPage() {
     navigator.clipboard.writeText("7GEibaWAAFwANcfSaCfGwpLocKcEfrnhpxK2cwRp9q7W");
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleTransaction = () => {
+    if (!amount || isNaN(Number(amount))) return alert("Enter a valid amount");
+    setIsProcessing(true);
+    setTimeout(() => {
+      setIsProcessing(false);
+      setTxSuccess(true);
+      setAmount('');
+      setTimeout(() => setTxSuccess(false), 3000);
+    }, 2000);
   };
 
   const mockHolders = [
@@ -33,8 +46,6 @@ export default function DarkPoolDetailPage() {
 
   return (
     <div className="w-full max-w-[1600px] mx-auto p-4 lg:p-6 flex flex-col gap-6 font-mono text-zinc-300 bg-[#050505]">
-      
-      {/* Back Button & Top Header */}
       <div className="flex items-center gap-4 shrink-0">
         <Link href="/dark-pools" className="h-10 w-10 border border-zinc-800 bg-[#09090B] flex items-center justify-center rounded-sm hover:border-[#00FF41] hover:text-[#00FF41] transition-colors">
           <ArrowLeft size={16} />
@@ -44,15 +55,12 @@ export default function DarkPoolDetailPage() {
         </div>
       </div>
 
-      {/* Token Header */}
       <div className="border border-zinc-800 bg-[#09090B] rounded-sm p-6 relative overflow-hidden flex flex-col md:flex-row gap-6 justify-between items-start md:items-center shadow-[0_0_20px_rgba(0,0,0,0.5)]">
         <div className="absolute top-0 left-0 w-1/4 h-[2px] bg-gradient-to-r from-[#00FF41] to-transparent"></div>
-        
         <div className="flex items-center gap-6 z-10">
           <div className="w-24 h-24 shrink-0 rounded-full bg-[#111116] border-[3px] border-[#00FF41] flex items-center justify-center text-3xl font-black text-[#00FF41] shadow-[0_0_30px_rgba(0,255,65,0.2)]">
             UC
           </div>
-          
           <div className="max-w-md">
             <h1 className="text-3xl font-black tracking-tight text-white uppercase flex items-center gap-3">
               UNEMPLOYED CAT <span className="text-sm text-zinc-500 font-mono font-normal">($UCAT)</span>
@@ -67,7 +75,6 @@ export default function DarkPoolDetailPage() {
             </div>
           </div>
         </div>
-
         <div className="z-10 bg-[#050505] border border-zinc-800 p-3 rounded-sm flex items-center gap-4 w-full md:w-auto">
           <div>
             <div className="text-[9px] text-zinc-500 font-black tracking-widest">CONTRACT ADDRESS</div>
@@ -79,7 +86,6 @@ export default function DarkPoolDetailPage() {
         </div>
       </div>
 
-      {/* 6-Stat Data Grid */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
         {[
           { label: 'MARKET CAP', value: '$1,200,000', icon: BarChart3, color: 'text-white' },
@@ -99,10 +105,8 @@ export default function DarkPoolDetailPage() {
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 items-start">
-        
-        {/* Left Column */}
         <div className="xl:col-span-2 flex flex-col gap-6">
-          <div className="border border-zinc-800 bg-[#09090B] rounded-sm p-6 relative flex flex-col shadow-[0_0_20px_rgba(0,0,0,0.5)] min-h-[550px]">
+          <div className="border border-zinc-800 bg-[#09090B] rounded-sm p-6 relative flex flex-col shadow-[0_0_20px_rgba(0,0,0,0.5)] min-h-[450px]">
             <div className="flex justify-between items-start mb-4">
               <div>
                 <div className="text-[10px] text-zinc-500 font-black tracking-widest">PRICE DISCOVERY (LIVE)</div>
@@ -129,7 +133,6 @@ export default function DarkPoolDetailPage() {
           </div>
         </div>
 
-        {/* Right Column */}
         <div className="xl:col-span-1 border border-zinc-800 bg-[#09090B] rounded-sm flex flex-col overflow-hidden shadow-[0_0_20px_rgba(0,0,0,0.5)] h-[500px]">
           <div className="grid grid-cols-3 border-b border-zinc-800 shrink-0">
             <button onClick={() => setPanelMode('bid')} className={`py-3 text-[9px] font-black uppercase tracking-widest transition-colors ${panelMode === 'bid' ? 'bg-[#111116] text-[#00FF41] border-b-2 border-[#00FF41]' : 'bg-[#050505] text-zinc-500 hover:text-white'}`}>
@@ -144,6 +147,12 @@ export default function DarkPoolDetailPage() {
           </div>
           
           <div className="flex-1 overflow-y-auto p-5 flex flex-col gap-4">
+            {txSuccess && (
+              <div className="bg-[#00FF41]/10 border border-[#00FF41]/30 text-[#00FF41] text-[11px] p-3 rounded-sm text-center animate-in fade-in">
+                Transaction Confirmed! (Simulated)
+              </div>
+            )}
+
             {panelMode === 'bid' && (
               <>
                 <div className="bg-[#111116] border border-zinc-800 rounded-sm p-3 text-[11px] text-zinc-400 leading-relaxed relative overflow-hidden">
@@ -157,8 +166,9 @@ export default function DarkPoolDetailPage() {
                     <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-black text-[#00FF41]">SOL</span>
                   </div>
                 </div>
-                <button className="w-full rounded-sm bg-[#00FF41] py-3 text-[10px] font-black text-black hover:bg-[#00e03a] transition-all flex items-center justify-center gap-2 mt-auto">
-                  <Lock size={14} /> ENCRYPT & BID
+                <button onClick={handleTransaction} disabled={isProcessing} className="w-full rounded-sm bg-[#00FF41] py-3 text-[10px] font-black text-black hover:bg-[#00e03a] disabled:opacity-50 transition-all flex items-center justify-center gap-2 mt-auto">
+                  {isProcessing ? <RefreshCcw size={14} className="animate-spin"/> : <Lock size={14} />}
+                  {isProcessing ? 'ENCRYPTING...' : 'ENCRYPT & BID'}
                 </button>
               </>
             )}
@@ -180,8 +190,9 @@ export default function DarkPoolDetailPage() {
                   <span className="flex items-center gap-1"><RefreshCcw size={10}/> LP Status</span>
                   <span className="text-[#00FF41] flex items-center gap-1"><ShieldCheck size={10}/> AUTO-BURN</span>
                 </div>
-                <button className="w-full rounded-sm bg-[#00FF41] py-3 text-[10px] font-black text-black hover:bg-[#00e03a] transition-all flex items-center justify-center gap-2 mt-auto">
-                  <Droplets size={14} /> ADD & BURN LP
+                <button onClick={handleTransaction} disabled={isProcessing} className="w-full rounded-sm bg-[#00FF41] py-3 text-[10px] font-black text-black hover:bg-[#00e03a] disabled:opacity-50 transition-all flex items-center justify-center gap-2 mt-auto">
+                  {isProcessing ? <RefreshCcw size={14} className="animate-spin"/> : <Droplets size={14} />}
+                  {isProcessing ? 'PROCESSING...' : 'ADD & BURN LP'}
                 </button>
               </>
             )}
