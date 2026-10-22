@@ -3,9 +3,9 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePrivy } from '@privy-io/react-auth';
 import { useSolanaWallet } from '@/hooks/useSolanaWallet';
-import { Menu } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 
-export function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
+export function TopBar({ onMenuClick, isMenuOpen }: { onMenuClick?: () => void, isMenuOpen?: boolean }) {
   const { authenticated, login } = usePrivy();
   const { address } = useSolanaWallet();
 
@@ -13,12 +13,13 @@ export function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
     <div className="flex flex-row items-center justify-between px-4 md:px-6 py-3 border-b border-zinc-800 bg-[#09090B] flex-shrink-0 z-40 relative">
       
       <div className="flex items-center gap-3">
-        {/* Mobile Hamburger */}
-        <button onClick={onMenuClick} className="md:hidden text-zinc-400 hover:text-white">
-          <Menu size={24} />
+        {/* Mobile Hamburger / Close Icon */}
+        <button onClick={onMenuClick} className="md:hidden relative h-8 w-8 flex items-center justify-center text-zinc-400 hover:text-white transition-transform duration-300">
+          <Menu size={24} className={`absolute transition-all duration-300 ${isMenuOpen ? 'opacity-0 rotate-90 scale-50' : 'opacity-100 rotate-0 scale-100'}`} />
+          <X size={24} className={`absolute transition-all duration-300 ${isMenuOpen ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 -rotate-90 scale-50'}`} />
         </button>
 
-        <Link href="/" className="flex items-center gap-2 md:gap-3 text-decoration-none">
+        <Link href="/" className="flex items-center gap-2 md:gap-3 text-decoration-none z-10">
           <img src="/logo.svg" alt="FairDegens" className="h-8 w-8 md:h-10 md:w-10" />
           <div className="flex flex-col">
             <span className="text-white font-black text-lg md:text-xl tracking-wider leading-none">
