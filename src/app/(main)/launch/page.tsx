@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSolanaWallet } from '@/hooks/useSolanaWallet';
-import { Rocket, ArrowRight, ArrowLeft, ImagePlus, ShieldCheck, Zap, AlertTriangle, Twitter, Send, Globe, Check } from 'lucide-react';
+import { Rocket, ArrowRight, ArrowLeft, ImagePlus, ShieldCheck, Zap, AlertTriangle, AtSign, Send, Globe, Check } from 'lucide-react';
 
 export default function LaunchPage() {
   const router = useRouter();
@@ -140,7 +140,7 @@ export default function LaunchPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-zinc-800/50 pt-5 mt-2">
                 <div className="relative">
-                  <Twitter size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
+                  <AtSign size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
                   <input type="text" value={formData.twitter} onChange={(e) => updateForm('twitter', e.target.value)} placeholder="X (Twitter)" className="w-full bg-[#111116] border border-zinc-800 rounded-lg pl-9 pr-3 py-2.5 text-xs focus:border-[#00FF41] outline-none transition-all" />
                 </div>
                 <div className="relative">
