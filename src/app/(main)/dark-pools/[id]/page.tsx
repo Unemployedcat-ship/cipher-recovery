@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import TradingChart from '@/components/TradingChart';
 import { 
-  ArrowLeft, Lock, ShieldCheck, Zap, AlertTriangle, TrendingUp, 
+  ArrowLeft, Lock, ShieldCheck, Zap, TrendingUp, 
   Droplets, RefreshCcw, Copy, Check, Globe, AtSign, Send, 
   Users, Activity, Wallet, Clock, ArrowUpRight, ArrowDownRight, 
   BarChart3
@@ -44,17 +44,16 @@ export default function DarkPoolDetailPage() {
         </div>
       </div>
 
-      {/* Token Header (Image, Bio, Socials, Address) */}
+      {/* Token Header */}
       <div className="border border-zinc-800 bg-[#09090B] rounded-sm p-6 relative overflow-hidden flex flex-col md:flex-row gap-6 justify-between items-start md:items-center shadow-[0_0_20px_rgba(0,0,0,0.5)]">
         <div className="absolute top-0 left-0 w-1/4 h-[2px] bg-gradient-to-r from-[#00FF41] to-transparent"></div>
         
         <div className="flex items-center gap-6 z-10">
-          {/* Token Image - NOW A PERFECT CIRCLE */}
-          <div className="h-24 w-24 rounded-full bg-[#111116] border-[3px] border-[#00FF41] flex items-center justify-center text-3xl font-black text-[#00FF41] shadow-[0_0_30px_rgba(0,255,65,0.2)]">
+          {/* Token Image - PERFECT CIRCLE */}
+          <div className="w-24 h-24 shrink-0 rounded-full bg-[#111116] border-[3px] border-[#00FF41] flex items-center justify-center text-3xl font-black text-[#00FF41] shadow-[0_0_30px_rgba(0,255,65,0.2)]">
             UC
           </div>
           
-          {/* Name & Bio */}
           <div className="max-w-md">
             <h1 className="text-3xl font-black tracking-tight text-white uppercase flex items-center gap-3">
               UNEMPLOYED CAT <span className="text-sm text-zinc-500 font-mono font-normal">($UCAT)</span>
@@ -62,8 +61,6 @@ export default function DarkPoolDetailPage() {
             <p className="text-xs text-zinc-400 mt-2 leading-relaxed">
               The first anti-snipe memecoin on Solana. Fair launch, no presale, LP burned. Built by degens, for degens.
             </p>
-            
-            {/* Socials */}
             <div className="flex items-center gap-4 mt-3">
               <a href="#" className="text-zinc-500 hover:text-[#00FF41] transition-colors"><Globe size={16} /></a>
               <a href="#" className="text-zinc-500 hover:text-[#00FF41] transition-colors"><AtSign size={16} /></a>
@@ -72,7 +69,6 @@ export default function DarkPoolDetailPage() {
           </div>
         </div>
 
-        {/* Contract Address */}
         <div className="z-10 bg-[#050505] border border-zinc-800 p-3 rounded-sm flex items-center gap-4 w-full md:w-auto">
           <div>
             <div className="text-[9px] text-zinc-500 font-black tracking-widest">CONTRACT ADDRESS</div>
@@ -105,10 +101,8 @@ export default function DarkPoolDetailPage() {
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 items-start">
         
-        {/* Left Column: Chart & Transaction Favor */}
+        {/* Left Column */}
         <div className="xl:col-span-2 flex flex-col gap-6">
-          
-          {/* Main Chart Box */}
           <div className="border border-zinc-800 bg-[#09090B] rounded-sm p-6 relative flex flex-col shadow-[0_0_20px_rgba(0,0,0,0.5)] min-h-[450px]">
             <div className="flex justify-between items-start mb-4">
               <div>
@@ -123,7 +117,6 @@ export default function DarkPoolDetailPage() {
             </div>
           </div>
 
-          {/* Transaction Favor Scale */}
           <div className="border border-zinc-800 bg-[#09090B] rounded-sm p-5 flex flex-col gap-3">
             <div className="flex justify-between text-[10px] font-black tracking-widest">
               <span className="text-[#00FF41] flex items-center gap-1"><ArrowUpRight size={12}/> BUYS (65%)</span>
@@ -135,13 +128,10 @@ export default function DarkPoolDetailPage() {
               <div className="h-full bg-red-500" style={{ width: '35%' }}></div>
             </div>
           </div>
-
         </div>
 
-        {/* Right Column: Interactive Tabbed Panel */}
+        {/* Right Column */}
         <div className="xl:col-span-1 border border-zinc-800 bg-[#09090B] rounded-sm flex flex-col overflow-hidden shadow-[0_0_20px_rgba(0,0,0,0.5)] h-[500px]">
-          
-          {/* Tabs */}
           <div className="grid grid-cols-3 border-b border-zinc-800 shrink-0">
             <button onClick={() => setPanelMode('bid')} className={`py-3 text-[9px] font-black uppercase tracking-widest transition-colors ${panelMode === 'bid' ? 'bg-[#111116] text-[#00FF41] border-b-2 border-[#00FF41]' : 'bg-[#050505] text-zinc-500 hover:text-white'}`}>
               <Zap size={12} className="inline mr-1"/> BID
@@ -155,7 +145,6 @@ export default function DarkPoolDetailPage() {
           </div>
           
           <div className="flex-1 overflow-y-auto p-5 flex flex-col gap-4">
-            
             {panelMode === 'bid' && (
               <>
                 <div className="bg-[#111116] border border-zinc-800 rounded-sm p-3 text-[11px] text-zinc-400 leading-relaxed relative overflow-hidden">
@@ -216,10 +205,8 @@ export default function DarkPoolDetailPage() {
                 ))}
               </div>
             )}
-
           </div>
         </div>
-
       </div>
     </div>
   );

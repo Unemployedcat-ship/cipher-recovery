@@ -1,24 +1,21 @@
 'use client';
-import { Activity, TrendingUp, Zap, ArrowUpRight, BarChart3, ChevronRight, List } from 'lucide-react';
-import Link from 'next/link';
+import { Activity, TrendingUp, Zap, ArrowUpRight, List } from 'lucide-react';
 import TradingChart from '@/components/TradingChart';
 
 export default function TerminalPage() {
   return (
     <div className="w-full h-[calc(100vh-100px)] p-4 lg:p-6 flex flex-col gap-4 font-mono text-zinc-300 bg-[#050505] overflow-hidden">
       
-      {/* Top Header Bar */}
+      {/* Top Header Bar - fixed height */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center border border-zinc-800 bg-[#09090B] p-3 rounded-sm relative overflow-hidden gap-4 shrink-0">
         <div className="absolute top-0 left-0 w-1/4 h-[2px] bg-gradient-to-r from-[#00FF41] to-transparent"></div>
-        <div className="flex items-center gap-4">
-          <div>
-            <div className="flex items-center gap-2 text-[9px] tracking-[0.3em] text-[#00FF41] mb-1 font-black">
-              <Activity className="h-3 w-3" /> LIVE MARKET
-            </div>
-            <h1 className="text-xl font-black tracking-tight text-white uppercase flex items-center gap-3">
-              TRADING DESK
-            </h1>
+        <div>
+          <div className="flex items-center gap-2 text-[9px] tracking-[0.3em] text-[#00FF41] mb-1 font-black">
+            <Activity className="h-3 w-3" /> LIVE MARKET
           </div>
+          <h1 className="text-xl font-black tracking-tight text-white uppercase">
+            TRADING DESK
+          </h1>
         </div>
         <div className="flex items-center gap-6 text-[10px] font-bold">
           <div className="flex flex-col"><span className="text-zinc-500">24H VOL</span><span className="text-white text-sm">$1.2M</span></div>
@@ -27,13 +24,14 @@ export default function TerminalPage() {
         </div>
       </div>
 
+      {/* Main Grid Area - fills remaining space */}
       <div className="flex-1 grid grid-cols-1 xl:grid-cols-3 gap-4 overflow-hidden min-h-0">
         
-        {/* Left Column: Chart & Table (Using Grid to prevent overlap) */}
-        <div className="xl:col-span-2 grid grid-rows-[1fr_240px] gap-4 h-full overflow-hidden">
+        {/* Left Column */}
+        <div className="xl:col-span-2 flex flex-col gap-4 h-full overflow-hidden">
           
-          {/* Live Chart Box */}
-          <div className="border border-zinc-800 bg-[#09090B] rounded-sm p-4 relative flex flex-col shadow-[0_0_20px_rgba(0,0,0,0.5)] overflow-hidden">
+          {/* Chart Box */}
+          <div className="flex-1 border border-zinc-800 bg-[#09090B] rounded-sm p-4 relative flex flex-col shadow-[0_0_20px_rgba(0,0,0,0.5)] min-h-0">
             <div className="flex justify-between items-start mb-2 shrink-0">
               <div>
                 <div className="text-[10px] text-zinc-500 font-black tracking-widest">TOTAL PROTOCOL VOLUME</div>
@@ -47,12 +45,12 @@ export default function TerminalPage() {
             </div>
           </div>
 
-          {/* Top Gainers Table */}
-          <div className="border border-zinc-800 bg-[#09090B] rounded-sm flex flex-col overflow-hidden">
+          {/* Top Gainers Table - fixed height */}
+          <div className="h-[220px] shrink-0 border border-zinc-800 bg-[#09090B] rounded-sm flex flex-col overflow-hidden">
             <div className="flex justify-between items-center p-3 border-b border-zinc-800 bg-[#050505] shrink-0">
               <h2 className="text-[10px] font-black text-white flex items-center gap-2 uppercase tracking-widest"><TrendingUp size={12} className="text-[#00FF41]"/> TOP GAINERS</h2>
             </div>
-            <div className="flex-1 overflow-auto">
+            <div className="flex-1 overflow-y-auto">
               <table className="w-full text-left text-xs">
                 <tbody className="divide-y divide-zinc-800/50">
                   {[
@@ -65,14 +63,10 @@ export default function TerminalPage() {
                         <div className="h-6 w-6 bg-zinc-800 border border-zinc-700 text-[8px] flex items-center justify-center font-bold text-zinc-400 group-hover:text-[#00FF41] group-hover:border-[#00FF41] transition-colors rounded-sm">
                           {token.sym.slice(0,2)}
                         </div>
-                        <div>
-                          <div className="font-bold text-zinc-200">{token.name}</div>
-                        </div>
+                        <div className="font-bold text-zinc-200">{token.name}</div>
                       </td>
                       <td className="px-3 py-2 text-zinc-400 font-mono">{token.price}</td>
-                      <td className="px-3 py-2 text-right text-[#00FF41] font-bold font-mono">
-                         {token.change}
-                      </td>
+                      <td className="px-3 py-2 text-right text-[#00FF41] font-bold font-mono">{token.change}</td>
                       <td className="px-3 py-2 text-right text-zinc-400 font-mono">{token.vol}</td>
                     </tr>
                   ))}
@@ -83,11 +77,11 @@ export default function TerminalPage() {
 
         </div>
 
-        {/* Right Column: Live Tape & Order Book */}
-        <div className="xl:col-span-1 grid grid-rows-2 gap-4 h-full overflow-hidden">
+        {/* Right Column */}
+        <div className="xl:col-span-1 flex flex-col gap-4 h-full overflow-hidden">
           
           {/* Live Tape */}
-          <div className="border border-zinc-800 bg-[#09090B] rounded-sm flex flex-col overflow-hidden shadow-[0_0_20px_rgba(0,0,0,0.5)]">
+          <div className="flex-1 border border-zinc-800 bg-[#09090B] rounded-sm flex flex-col overflow-hidden shadow-[0_0_20px_rgba(0,0,0,0.5)] min-h-0">
             <div className="flex justify-between items-center p-3 border-b border-zinc-800 bg-[#050505] shrink-0">
               <h2 className="text-[10px] font-black text-white flex items-center gap-2 uppercase tracking-widest"><Zap size={12} className="text-[#FF00FF]"/> LIVE TAPE</h2>
               <div className="flex items-center gap-1 text-[8px] text-[#00FF41] bg-[#00FF41]/10 px-1.5 py-0.5 rounded border border-[#00FF41]/20">
@@ -112,7 +106,6 @@ export default function TerminalPage() {
                 { time: '12:20:58', type: 'BUY', price: '0.000041', amt: '5.00', color: 'text-[#00FF41]', bg: 'bg-[#00FF41]/5' },
                 { time: '12:20:44', type: 'BUY', price: '0.000041', amt: '0.80', color: 'text-[#00FF41]', bg: 'bg-[#00FF41]/5' },
                 { time: '12:20:31', type: 'SELL', price: '0.000038', amt: '2.50', color: 'text-red-400', bg: 'bg-red-500/5' },
-                { time: '12:20:15', type: 'BUY', price: '0.000040', amt: '1.10', color: 'text-[#00FF41]', bg: 'bg-[#00FF41]/5' },
               ].map((trade, i) => (
                 <div key={i} className={`grid grid-cols-4 px-3 py-1.5 border-b border-zinc-800/30 hover:bg-zinc-800 transition-colors cursor-default ${trade.bg}`}>
                   <div className="col-span-1 text-zinc-500">{trade.time}</div>
@@ -125,7 +118,7 @@ export default function TerminalPage() {
           </div>
 
           {/* Order Book */}
-          <div className="border border-zinc-800 bg-[#09090B] rounded-sm flex flex-col overflow-hidden shadow-[0_0_20px_rgba(0,0,0,0.5)]">
+          <div className="flex-1 border border-zinc-800 bg-[#09090B] rounded-sm flex flex-col overflow-hidden shadow-[0_0_20px_rgba(0,0,0,0.5)] min-h-0">
              <div className="flex justify-between items-center p-3 border-b border-zinc-800 bg-[#050505] shrink-0">
               <h2 className="text-[10px] font-black text-white flex items-center gap-2 uppercase tracking-widest"><List size={12} className="text-zinc-400"/> ORDER BOOK</h2>
             </div>
@@ -171,7 +164,6 @@ export default function TerminalPage() {
           </div>
 
         </div>
-
       </div>
     </div>
   );
