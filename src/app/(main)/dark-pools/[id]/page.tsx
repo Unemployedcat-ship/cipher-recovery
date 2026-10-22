@@ -102,7 +102,7 @@ export default function DarkPoolDetailPage() {
         
         {/* Left Column */}
         <div className="xl:col-span-2 flex flex-col gap-6">
-          <div className="border border-zinc-800 bg-[#09090B] rounded-sm p-6 relative flex flex-col shadow-[0_0_20px_rgba(0,0,0,0.5)] min-h-[450px]">
+          <div className="border border-zinc-800 bg-[#09090B] rounded-sm p-6 relative flex flex-col shadow-[0_0_20px_rgba(0,0,0,0.5)] min-h-[550px]">
             <div className="flex justify-between items-start mb-4">
               <div>
                 <div className="text-[10px] text-zinc-500 font-black tracking-widest">PRICE DISCOVERY (LIVE)</div>

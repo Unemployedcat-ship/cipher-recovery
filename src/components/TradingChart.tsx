@@ -36,12 +36,14 @@ export default function TradingChart() {
       },
       rightPriceScale: { 
         borderColor: 'rgba(148, 163, 184, 0.2)',
-        scaleMargins: { top: 0.1, bottom: 0.2 }, // Leave room for volume
+        scaleMargins: { top: 0.1, bottom: 0.2 },
       },
       timeScale: { 
         borderColor: 'rgba(148, 163, 184, 0.2)', 
         timeVisible: true, 
         secondsVisible: false,
+        rightOffset: 5, // Leave space on the right
+        shiftVisibleRangeOnNewBar: true, // Auto-shift on new data
       },
       autoSize: true,
       crosshair: {
@@ -87,17 +89,18 @@ export default function TradingChart() {
 
     chart.timeScale().fitContent();
 
-    // Simulate live data pushing every 1.5 seconds
+    // Simulate live data
     const interval = setInterval(() => {
       const lastCandle = initialData[initialData.length - 1];
-      const move = (Math.random() - 0.5) * 5; // Fluctuate by up to $2.50
+      // Smoother price movement
+      const move = (Math.random() - 0.45) * 1.5; 
       const newCandle = {
         time: (lastCandle.time as number) + 60,
         open: lastCandle.close,
-        high: lastCandle.close + Math.random() * 3,
-        low: lastCandle.close - Math.random() * 3,
+        high: lastCandle.close + Math.random() * 1.2,
+        low: lastCandle.close - Math.random() * 1.2,
         close: lastCandle.close + move,
-        volume: Math.floor(Math.random() * 5000) + 1000,
+        volume: Math.floor(Math.random() * 500) + 100,
       };
       initialData.push(newCandle);
 
@@ -108,7 +111,10 @@ export default function TradingChart() {
         value: newCandle.volume,
         color: newCandle.close >= newCandle.open ? 'rgba(0, 255, 65, 0.4)' : 'rgba(239, 68, 68, 0.4)',
       });
-    }, 1500);
+
+      // AUTO-FOLLOW THE NEWEST CANDLE
+      chart.timeScale().scrollToRealTime();
+    }, 2000);
 
     return () => { clearInterval(interval); chart.remove(); };
   }, []);
@@ -137,14 +143,15 @@ export default function TradingChart() {
 
 function generateMockOHLCV(count: number) {
   const data = [];
-  let price = 125.00; // Realistic starting price
+  let price = 125.00;
   for (let i = 0; i < count; i++) {
     const open = price;
-    const move = (Math.random() - 0.5) * 5; // up to $2.50 move
+    // Smaller, smoother moves
+    const move = (Math.random() - 0.5) * 2; 
     const close = open + move;
-    const high = Math.max(open, close) + Math.random() * 2;
-    const low = Math.min(open, close) - Math.random() * 2;
-    const volume = Math.floor(Math.random() * 5000) + 500;
+    const high = Math.max(open, close) + Math.random() * 1;
+    const low = Math.min(open, close) - Math.random() * 1;
+    const volume = Math.floor(Math.random() * 500) + 100;
     
     data.push({ 
       time: (Math.floor(Date.now() / 1000) - (count - i) * 60) as UTCTimestamp, 
