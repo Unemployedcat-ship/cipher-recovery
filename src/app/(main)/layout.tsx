@@ -10,27 +10,22 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   return (
     <ClientProviders>
       <LegalGate>
-        <div className="flex flex-col h-screen overflow-hidden bg-[#050505] text-white font-mono">
+        {/* Force the entire app to be a vertical column */}
+        <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', width: '100vw', overflow: 'hidden', backgroundColor: '#050505', color: 'white', fontFamily: 'monospace', margin: 0, padding: 0 }}>
           
-          {/* Top Ticker */}
           <TickerTape />
-          
-          {/* Top Navigation */}
           <TopBar />
           
-          {/* Main Content Area */}
-          <div className="flex flex-1 overflow-hidden relative">
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-cyan-900/10 via-[#09090B] to-[#09090B] pointer-events-none -z-10"></div>
+          {/* Force the Sidebar and Main content to be a horizontal row */}
+          <div style={{ display: 'flex', flexDirection: 'row', flex: 1, overflow: 'hidden' }}>
             
-            {/* Left Sidebar */}
             <Sidebar />
             
-            {/* Page Content */}
-            <main className="flex-1 overflow-y-auto relative z-10">
+            <main style={{ flex: 1, overflowY: 'auto', position: 'relative' }}>
               {children}
             </main>
+            
           </div>
-          
         </div>
       </LegalGate>
     </ClientProviders>
