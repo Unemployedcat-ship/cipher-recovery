@@ -41,9 +41,9 @@ export default function TradingChart() {
       timeScale: { 
         borderColor: 'rgba(148, 163, 184, 0.2)', 
         timeVisible: true, 
-        secondsVisible: false,
-        rightOffset: 5, // Leave space on the right
-        shiftVisibleRangeOnNewBar: true, // Auto-shift on new data
+        secondsVisible: true, // Show seconds for high-frequency feel
+        rightOffset: 5, 
+        shiftVisibleRangeOnNewBar: false, // REMOVED AUTO-SCROLL
       },
       autoSize: true,
       crosshair: {
@@ -87,34 +87,51 @@ export default function TradingChart() {
       color: d.close >= d.open ? 'rgba(0, 255, 65, 0.4)' : 'rgba(239, 68, 68, 0.4)' 
     })));
 
-    chart.timeScale().fitContent();
+    // FRAME THE CURRENT PRICE PERFECTLY ON LOAD
+    const totalBars = initialData.length;
+    chart.timeScale().setVisibleLogicalRange({
+      from: totalBars - 50, // Show last 50 candles
+      to: totalBars + 5,    // Leave a little space on the right
+    });
 
-    // Simulate live data
+    let lastCandle = { ...initialData[initialData.length - 1] };
+    let tickCount = 0;
+
+    // FAST LIVE DATA (500ms)
     const interval = setInterval(() => {
-      const lastCandle = initialData[initialData.length - 1];
-      // Smoother price movement
-      const move = (Math.random() - 0.45) * 1.5; 
-      const newCandle = {
-        time: (lastCandle.time as number) + 60,
-        open: lastCandle.close,
-        high: lastCandle.close + Math.random() * 1.2,
-        low: lastCandle.close - Math.random() * 1.2,
-        close: lastCandle.close + move,
-        volume: Math.floor(Math.random() * 500) + 100,
-      };
-      initialData.push(newCandle);
+      tickCount++;
+      
+      // Small price fluctuation
+      const move = (Math.random() - 0.49) * 0.8; 
+      const newClose = lastCandle.close + move;
+      
+      // Update current candle's high, low, and close
+      lastCandle.high = Math.max(lastCandle.high, newClose);
+      lastCandle.low = Math.min(lastCandle.low, newClose);
+      lastCandle.close = newClose;
+      lastCandle.volume += Math.floor(Math.random() * 50);
 
-      candlestickSeries.update(newCandle);
-      lineSeries.update({ time: newCandle.time, value: newCandle.close });
+      candlestickSeries.update(lastCandle);
+      lineSeries.update({ time: lastCandle.time, value: lastCandle.close });
       volumeSeries.update({
-        time: newCandle.time, 
-        value: newCandle.volume,
-        color: newCandle.close >= newCandle.open ? 'rgba(0, 255, 65, 0.4)' : 'rgba(239, 68, 68, 0.4)',
+        time: lastCandle.time, 
+        value: lastCandle.volume,
+        color: lastCandle.close >= lastCandle.open ? 'rgba(0, 255, 65, 0.4)' : 'rgba(239, 68, 68, 0.4)',
       });
 
-      // AUTO-FOLLOW THE NEWEST CANDLE
-      chart.timeScale().scrollToRealTime();
-    }, 2000);
+      // Every 10 ticks (5 seconds), create a NEW candle
+      if (tickCount % 10 === 0) {
+        lastCandle = {
+          time: (lastCandle.time as number) + 60,
+          open: lastCandle.close,
+          high: lastCandle.close,
+          low: lastCandle.close,
+          close: lastCandle.close,
+          volume: 0,
+        };
+      }
+
+    }, 500); // 500ms interval
 
     return () => { clearInterval(interval); chart.remove(); };
   }, []);
@@ -146,11 +163,11 @@ function generateMockOHLCV(count: number) {
   let price = 125.00;
   for (let i = 0; i < count; i++) {
     const open = price;
-    // Smaller, smoother moves
-    const move = (Math.random() - 0.5) * 2; 
+    // Smoother initial data generation
+    const move = (Math.random() - 0.5) * 1.5; 
     const close = open + move;
-    const high = Math.max(open, close) + Math.random() * 1;
-    const low = Math.min(open, close) - Math.random() * 1;
+    const high = Math.max(open, close) + Math.random() * 0.8;
+    const low = Math.min(open, close) - Math.random() * 0.8;
     const volume = Math.floor(Math.random() * 500) + 100;
     
     data.push({ 
