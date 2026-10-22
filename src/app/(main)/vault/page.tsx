@@ -6,13 +6,13 @@ import PortfolioChart from '@/components/PortfolioChart';
 import { 
   Wallet, ShieldCheck, ArrowUpRight, Activity, TrendingUp, 
   Droplets, BarChart3, Download, RefreshCcw, Landmark, 
-  Zap, Clock, ArrowDownRight, ArrowUpRightSquare, Flame
+  Zap, Clock, ArrowDownRight, ArrowUpRightSquare, Flame, Target
 } from 'lucide-react';
 
 export default function VaultPage() {
   const [activeTab, setActiveTab] = useState<'launches' | 'positions'>('launches');
 
-  // Mock data to make the page feel alive
+  // Mock data
   const mockPortfolioValue = 1337.12;
   const mockPnl = 337.12;
   const mockPnlPercent = 33.71;
@@ -89,10 +89,10 @@ export default function VaultPage() {
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 items-start">
         
-        {/* Left Column: Chart & Table */}
+        {/* Left Column */}
         <div className="xl:col-span-2 flex flex-col gap-6">
           
-          {/* Portfolio Performance Chart */}
+          {/* Portfolio Chart */}
           <div className="border border-zinc-800 bg-[#09090B] rounded-sm p-5 relative overflow-hidden shadow-[0_0_20px_rgba(0,0,0,0.5)]">
             <div className="flex justify-between items-start mb-6">
               <div>
@@ -129,8 +129,7 @@ export default function VaultPage() {
 
             {activeTab === 'launches' ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
-                {/* Mock Launched Token Card */}
-                <Link href="/dark-pools/1" className="group border border-zinc-800 bg-[#050505] rounded-sm p-4 hover:border-[#00FF41]/50 transition-all block relative overflow-hidden">
+                <Link href="/dark-pools/1" className="group border border-zinc-800 bg-[#050505] rounded-sm p-4 hover:border-[#00FF41]/50 transition-all block">
                   <div className="flex items-center gap-3 mb-3">
                     <div className="h-10 w-10 bg-[#111116] border border-zinc-700 flex items-center justify-center font-black text-[#00FF41] rounded-md">UC</div>
                     <div>
@@ -148,15 +147,53 @@ export default function VaultPage() {
                 </Link>
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
-                <div className="h-16 w-16 bg-[#111116] border border-zinc-800 rounded-full flex items-center justify-center mb-4">
-                  <BarChart3 className="h-8 w-8 text-zinc-600" />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
+                {/* Mock Position 1 */}
+                <div className="group border border-zinc-800 bg-[#050505] rounded-sm p-4 hover:border-[#00FF41]/50 transition-all block">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="h-10 w-10 bg-[#111116] border border-zinc-700 flex items-center justify-center font-black text-[#00FF41] rounded-md">FA</div>
+                    <div>
+                      <div className="font-bold text-white text-sm">FairDegens</div>
+                      <div className="text-[10px] text-zinc-500 font-mono">$FAIR</div>
+                    </div>
+                    <div className="ml-auto text-right">
+                      <div className="text-[8px] font-black px-2 py-1 rounded bg-[#FF00FF]/10 text-[#FF00FF] border border-[#FF00FF]/30">BIDDING</div>
+                    </div>
+                  </div>
+                  <div className="space-y-2 mt-3">
+                    <div className="flex justify-between text-[10px] font-bold">
+                      <span className="text-zinc-500">Progress to Grad</span>
+                      <span className="text-[#00FF41]">1.2 / 2.0 SOL</span>
+                    </div>
+                    <div className="h-1.5 w-full bg-zinc-800 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#00FF41]" style={{ width: '60%' }}></div>
+                    </div>
+                  </div>
                 </div>
-                <h3 className="text-lg font-black text-white mb-2 uppercase tracking-wider">No Active Positions</h3>
-                <p className="text-xs text-zinc-500 mb-6 max-w-sm">You don't have any active bids or positions in the dark pools.</p>
-                <Link href="/dark-pools" className="rounded-sm border border-[#00FF41] bg-[#00FF41]/10 px-6 py-2 text-xs font-black text-[#00FF41] hover:bg-[#00FF41]/20 transition-all flex items-center gap-2">
-                  EXPLORE POOLS <ArrowUpRight size={14} />
-                </Link>
+
+                {/* Mock Position 2 */}
+                <div className="group border border-zinc-800 bg-[#050505] rounded-sm p-4 hover:border-[#00FF41]/50 transition-all block">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="h-10 w-10 bg-[#111116] border border-zinc-700 flex items-center justify-center font-black text-[#00FF41] rounded-md">DK</div>
+                    <div>
+                      <div className="font-bold text-white text-sm">Doge Killer</div>
+                      <div className="text-[10px] text-zinc-500 font-mono">$DOGEK</div>
+                    </div>
+                    <div className="ml-auto text-right">
+                      <div className="text-[8px] font-black px-2 py-1 rounded bg-zinc-800 text-zinc-400 border border-zinc-700">FILLED</div>
+                    </div>
+                  </div>
+                  <div className="space-y-2 mt-3">
+                    <div className="flex justify-between text-[10px] font-bold">
+                      <span className="text-zinc-500">Position Value</span>
+                      <span className="text-white">$890.00</span>
+                    </div>
+                    <div className="flex justify-between text-[10px] font-bold">
+                      <span className="text-zinc-500">PnL</span>
+                      <span className="text-[#00FF41]">+$120.00 (+15%)</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
           </div>
@@ -225,7 +262,7 @@ export default function VaultPage() {
               <h2 className="text-[10px] font-black text-white uppercase tracking-widest flex items-center gap-2">
                 <Clock size={12} className="text-zinc-400"/> RECENT ACTIVITY
               </h2>
-              <span className="text-[9px] text-[#00FF41] hover:underline cursor-pointer">VIEW ALL</span>
+              <Link href="/vault/activity" className="text-[9px] text-[#00FF41] hover:underline cursor-pointer">VIEW ALL</Link>
             </div>
             
             <div className="space-y-3">
@@ -254,20 +291,6 @@ export default function VaultPage() {
                 <div className="text-right">
                   <div className="text-xs font-mono text-white">-0.10</div>
                   <div className="text-[9px] text-[#00FF41] font-mono">SUCCESS</div>
-                </div>
-              </div>
-
-              <div className="flex justify-between items-center group cursor-pointer opacity-60">
-                <div className="flex gap-3 items-center">
-                  <div className="h-8 w-8 rounded-sm bg-zinc-800 border border-zinc-700 flex items-center justify-center text-zinc-400"><ArrowUpRightSquare size={14}/></div>
-                  <div>
-                    <div className="text-xs font-bold text-white">Token Launched</div>
-                    <div className="text-[10px] text-zinc-500 font-mono flex items-center gap-1"><Clock size={8}/> 2 days ago</div>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <div className="text-xs font-mono text-white">0.02</div>
-                  <div className="text-[9px] text-zinc-500 font-mono">FEE</div>
                 </div>
               </div>
             </div>
