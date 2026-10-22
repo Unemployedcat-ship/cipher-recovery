@@ -27,7 +27,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
             {/* Mobile Sidebar Overlay & Drawer */}
             <div className={`fixed inset-0 z-50 flex md:hidden transition-all duration-300 ${isMobileMenuOpen ? 'visible' : 'invisible pointer-events-none'}`}>
               {/* Backdrop */}
-              <div className={`fixed inset-0 bg-black/70 backdrop-blur-sm transition-opacity duration-300 ${isMobileMenuOpen ? 'opacity-100' : 'opacity-0'}`} onClick={() => setIsMobileMenuOpen(false)}></div>
+              <div className={`fixed inset-0 bg-black/70  transition-opacity duration-300 ${isMobileMenuOpen ? 'opacity-100' : 'opacity-0'}`} onClick={() => setIsMobileMenuOpen(false)}></div>
               
               {/* Sliding Panel */}
               <div className={`relative flex flex-col w-72 h-full bg-[#09090B] border-r border-zinc-800 shadow-2xl transition-transform duration-300 ease-out ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>

@@ -41,7 +41,7 @@ export default function DarkPoolsPage() {
       {/* Empty State (The main focus) */}
       <div className="border border-zinc-800 bg-[#09090B] rounded-xl flex flex-col items-center justify-center py-24 px-4 text-center relative overflow-hidden">
         {/* Background glow effect */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#00FF41]/5 blur-[100px] rounded-full pointer-events-none"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#00FF41]/5  rounded-full pointer-events-none"></div>
 
         <div className="h-16 w-16 bg-[#111116] border border-zinc-800 rounded-full flex items-center justify-center mb-6 shadow-lg">
           <ShieldCheck className="h-8 w-8 text-[#00FF41]" />

@@ -9,7 +9,7 @@ export default function ConvictionPage() {
         <p className="text-sm text-zinc-500">Reputation earned through belief, not just capital.</p>
       </div>
       <div className="border border-zinc-800 bg-gradient-to-r from-[#09090B] to-[#111116] rounded-xl p-6 md:p-8 mb-8 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/5 blur-[100px] rounded-full"></div>
+        <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/5  rounded-full"></div>
         <div className="text-[10px] text-zinc-500 tracking-widest font-bold mb-2">CURRENT TIER</div>
         <div className="text-4xl md:text-5xl font-black text-amber-500 tracking-tight mb-4">BRONZE</div>
         <div className="flex justify-between text-xs text-zinc-400 mb-2"><span>Progress</span><span>0 / 500 CP</span></div>

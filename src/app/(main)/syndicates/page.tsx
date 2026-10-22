@@ -15,7 +15,7 @@ export default function SyndicatesPage() {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div className="border border-zinc-800 bg-[#09090B] rounded-xl p-5 hover:border-[#00FF41]/50 transition-colors group cursor-pointer relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-[#00FF41]/5 blur-2xl rounded-full"></div>
+          <div className="absolute top-0 right-0 w-24 h-24 bg-[#00FF41]/5  rounded-full"></div>
           <div className="flex justify-between items-start mb-4">
             <div className="h-12 w-12 rounded-lg bg-[#00FF41]/10 border border-[#00FF41]/30 flex items-center justify-center text-[#00FF41]"><Shield size={24} /></div>
             <div className="text-[10px] font-bold bg-zinc-800 px-2 py-1 rounded text-zinc-400">VERIFIED</div>
@@ -28,7 +28,7 @@ export default function SyndicatesPage() {
           </div>
         </div>
         <div className="border border-zinc-800 bg-[#09090B] rounded-xl p-5 hover:border-[#FF00FF]/50 transition-colors group cursor-pointer relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-[#FF00FF]/5 blur-2xl rounded-full"></div>
+          <div className="absolute top-0 right-0 w-24 h-24 bg-[#FF00FF]/5  rounded-full"></div>
           <div className="flex justify-between items-start mb-4">
             <div className="h-12 w-12 rounded-lg bg-[#FF00FF]/10 border border-[#FF00FF]/30 flex items-center justify-center text-[#FF00FF]"><Shield size={24} /></div>
             <div className="text-[10px] font-bold bg-zinc-800 px-2 py-1 rounded text-zinc-400">ELITE</div>
