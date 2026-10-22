@@ -17,6 +17,7 @@
     "@solana/web3.js": "^1.99.0",
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.45.0",
+    "@tailwindcss/postcss": "^4.0.0",
     "@tanstack/react-query": "^5.28.4",
     "@zama-fhe/react-sdk": "^3.6.0",
     "@zama-fhe/sdk": "^3.6.0",
