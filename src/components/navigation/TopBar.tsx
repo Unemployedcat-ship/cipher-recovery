@@ -1,126 +1,47 @@
 'use client';
-import { useState, useRef, useEffect } from 'react';
-import { usePrivy } from '@privy-io/react-auth';
-import { useSupabase } from '@/components/SupabaseProvider';
-import { useSolanaWallet } from '@/hooks/useSolanaWallet';
-import { PublicKey } from '@solana/web3.js';
-import { ChevronDown, User, LogOut, Wallet, Copy, Check, Settings } from 'lucide-react';
+import { useState } from 'react';
 import Link from 'next/link';
-import { connection } from '@/lib/solana/constants';
+import { usePrivy } from '@privy-io/react-auth';
+import { useSolanaWallet } from '@/hooks/useSolanaWallet';
+import { Menu } from 'lucide-react';
 
-export function TopBar() {
-  const { user, logout, authenticated, login } = usePrivy();
-  const { supabase } = useSupabase();
-  const { address, createWallet, solanaReady } = useSolanaWallet();
-  const [isOpen, setIsOpen] = useState(false);
-  const [copied, setCopied] = useState(false);
-  const [profileData, setProfileData] = useState<any>(null);
-  const [liveBalance, setLiveBalance] = useState<number | null>(null);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) setIsOpen(false);
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  useEffect(() => {
-    async function fetchProfile() {
-      if (!user || !supabase) return;
-      const { data } = await supabase.from('profiles').select('username, syndicate_tag').eq('privy_did', user.id).single();
-      if (data) setProfileData(data);
-    }
-    fetchProfile();
-  }, [user, supabase]);
-
-  useEffect(() => {
-    if (!address || !connection) return;
-    let isMounted = true;
-    const fetchBalance = async () => {
-      try {
-        const pubkey = new PublicKey(address);
-        const lamports = await connection.getBalance(pubkey);
-        if (isMounted) setLiveBalance(lamports / 1_000_000_000);
-      } catch (err) {}
-    };
-    fetchBalance();
-    const interval = setInterval(fetchBalance, 10000);
-    return () => { isMounted = false; clearInterval(interval); };
-  }, [address]);
-
-  const handleCopy = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (address) {
-      navigator.clipboard.writeText(address);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    }
-  };
-
-  const displayName = profileData?.username || (address ? `${address.slice(0, 4)}...${address.slice(-4)}` : 'Degen');
+export function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
+  const { authenticated, login } = usePrivy();
+  const { address } = useSolanaWallet();
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: '12px 24px', borderBottom: '1px solid #222228', backgroundColor: 'rgba(9, 9, 11, 0.95)', backdropFilter: 'blur(10px)', flexShrink: 0, zIndex: 50, position: 'relative' }}>
+    <div className="flex flex-row items-center justify-between px-4 md:px-6 py-3 border-b border-zinc-800 bg-[#09090B] flex-shrink-0 z-40 relative">
       
-      <Link href="/" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '12px', textDecoration: 'none' }}>
-        <img src="/logo.svg" alt="FairDegens" style={{ height: '38px', width: '38px' }} />
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <span style={{ color: 'white', fontWeight: 800, fontSize: '18px', letterSpacing: '1px' }}>
-            FAIR<span style={{ color: '#00FF41' }}>//</span>DEGENS
-          </span>
-          <span style={{ color: '#00FF41', fontSize: '9px', letterSpacing: '3px', textTransform: 'uppercase', fontWeight: 'bold', marginTop: '2px' }}>
-            Anti-Snipe Protocol
-          </span>
-        </div>
-      </Link>
+      <div className="flex items-center gap-3">
+        {/* Mobile Hamburger */}
+        <button onClick={onMenuClick} className="md:hidden text-zinc-400 hover:text-white">
+          <Menu size={24} />
+        </button>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+        <Link href="/" className="flex items-center gap-2 md:gap-3 text-decoration-none">
+          <img src="/logo.svg" alt="FairDegens" className="h-8 w-8 md:h-10 md:w-10" />
+          <div className="flex flex-col">
+            <span className="text-white font-black text-lg md:text-xl tracking-wider leading-none">
+              FAIR<span className="text-[#00FF41]">//</span>DEGENS
+            </span>
+            <span className="hidden md:block text-[#00FF41] text-[9px] tracking-[0.2em] uppercase font-bold mt-1">
+              Anti-Snipe Protocol
+            </span>
+          </div>
+        </Link>
+      </div>
+
+      <div className="flex items-center gap-2">
         {!authenticated ? (
-          <button onClick={login} style={{ backgroundColor: '#00FF41', color: 'black', fontWeight: 'bold', fontSize: '12px', padding: '8px 20px', borderRadius: '4px', border: 'none', cursor: 'pointer', boxShadow: '0 0 15px rgba(0,255,65,0.3)' }}>
-            CONNECT IDENTITY
-          </button>
-        ) : !address ? (
-          <button onClick={() => createWallet()} disabled={!solanaReady} style={{ backgroundColor: '#FBBF24', color: 'black', fontWeight: 'bold', fontSize: '12px', padding: '8px 20px', borderRadius: '4px', border: 'none', cursor: 'pointer' }}>
-            CREATE WALLET
+          <button onClick={login} className="bg-[#00FF41] text-black font-bold text-[10px] md:text-xs px-3 md:px-5 py-2 rounded hover:bg-[#00e03a] transition-colors shadow-[0_0_15px_rgba(0,255,65,0.3)]">
+            CONNECT
           </button>
         ) : (
-          <div style={{ position: 'relative', zIndex: 100 }} ref={dropdownRef}>
-            <button onClick={() => setIsOpen(!isOpen)} style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '12px', backgroundColor: '#111116', border: '1px solid #222228', borderRadius: '6px', padding: '6px 12px', cursor: 'pointer' }}>
-              <div style={{ height: '6px', width: '6px', backgroundColor: '#00FF41', borderRadius: '50%', boxShadow: '0 0 8px #00FF41' }}></div>
-              <span style={{ color: '#d4d4d8', fontSize: '13px', fontWeight: 600 }}>{displayName}</span>
-              <span style={{ color: '#00FF41', fontSize: '12px', fontWeight: 'bold', backgroundColor: 'rgba(0,255,65,0.1)', padding: '2px 8px', borderRadius: '4px' }}>
-                {liveBalance !== null ? liveBalance.toFixed(2) : '0.00'} SOL
-              </span>
-              <ChevronDown size={14} color="#71717a" />
-            </button>
-
-            {isOpen && (
-              <div style={{ position: 'absolute', right: 0, top: '100%', marginTop: '8px', width: '250px', backgroundColor: '#09090B', border: '1px solid #222228', borderRadius: '8px', padding: '8px 0', boxShadow: '0 20px 40px rgba(0,0,0,0.8)' }}>
-                <button onClick={handleCopy} style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', backgroundColor: 'transparent', border: 'none', borderBottom: '1px solid #222228', cursor: 'pointer', textAlign: 'left' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <Wallet size={16} color="#00FF41" /> 
-                    <div style={{ display: 'flex', flexDirection: 'column' }}>
-                      <span style={{ fontSize: '10px', color: '#71717a', textTransform: 'uppercase', fontWeight: 'bold' }}>Wallet</span>
-                      <span style={{ color: 'white', fontSize: '13px', fontFamily: 'monospace' }}>{address.slice(0, 6)}...{address.slice(-6)}</span>
-                    </div>
-                  </div>
-                  {copied ? <Check size={16} color="#00FF41"/> : <Copy size={16} color="#71717a" />}
-                </button>
-
-                <Link href="/profile" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px', color: '#d4d4d8', textDecoration: 'none', fontSize: '13px', fontWeight: 500 }}>
-                  <User size={16} /> Profile
-                </Link>
-                <Link href="/settings" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px', color: '#d4d4d8', textDecoration: 'none', fontSize: '13px', fontWeight: 500 }}>
-                  <Settings size={16} /> Settings
-                </Link>
-                <div style={{ height: '1px', backgroundColor: '#222228', margin: '4px 0' }} />
-                <button onClick={logout} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px', color: '#f87171', backgroundColor: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left', fontSize: '13px', fontWeight: 500 }}>
-                  <LogOut size={16} /> Disconnect
-                </button>
-              </div>
-            )}
+          <div className="flex items-center gap-2 bg-[#111116] border border-zinc-800 px-2 md:px-3 py-1.5 rounded-md">
+            <div className="h-2 w-2 bg-[#00FF41] rounded-full"></div>
+            <span className="text-[10px] md:text-xs text-zinc-300 font-mono">
+              {address?.slice(0,4)}...{address?.slice(-4)}
+            </span>
           </div>
         )}
       </div>

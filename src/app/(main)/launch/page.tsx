@@ -256,7 +256,7 @@ export default function LaunchPage() {
               1. MEME DETAILS
             </h2>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="font-mono text-[10px] text-slate-400 block mb-2 uppercase tracking-wider">
                   Name
@@ -382,7 +382,7 @@ export default function LaunchPage() {
             <h2 className="font-mono text-sm text-white font-bold border-b border-white/5 pb-2">
               2. TOKENOMICS & SEEDING
             </h2>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="font-mono text-[10px] text-slate-400 block mb-2 uppercase tracking-wider">
                   Total Supply

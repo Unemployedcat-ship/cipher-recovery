@@ -1,5 +1,5 @@
 'use client';
-
+import { useState } from 'react';
 import { ClientProviders } from "@/components/ClientProviders";
 import { LegalGate } from "@/components/modals/LegalGate";
 import { TopBar } from "@/components/navigation/TopBar";
@@ -7,24 +7,36 @@ import { TickerTape } from "@/components/navigation/TickerTape";
 import { Sidebar } from "@/components/navigation/Sidebar";
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   return (
     <ClientProviders>
       <LegalGate>
-        {/* Force the entire app to be a vertical column */}
-        <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', width: '100vw', overflow: 'hidden', backgroundColor: '#050505', color: 'white', fontFamily: 'monospace', margin: 0, padding: 0 }}>
-          
+        <div className="flex flex-col h-screen overflow-hidden bg-[#050505] text-white font-mono">
           <TickerTape />
-          <TopBar />
+          <TopBar onMenuClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} />
           
-          {/* Force the Sidebar and Main content to be a horizontal row */}
-          <div style={{ display: 'flex', flexDirection: 'row', flex: 1, overflow: 'hidden' }}>
+          <div className="flex flex-1 overflow-hidden relative">
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-cyan-900/10 via-[#09090B] to-[#09090B] pointer-events-none -z-10"></div>
             
-            <Sidebar />
+            {/* Desktop Sidebar */}
+            <div className="hidden md:flex h-full flex-shrink-0">
+              <Sidebar />
+            </div>
+
+            {/* Mobile Sidebar Overlay */}
+            {isMobileMenuOpen && (
+              <div className="fixed inset-0 z-50 flex md:hidden">
+                <div className="fixed inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setIsMobileMenuOpen(false)}></div>
+                <div className="relative flex flex-col w-64 h-full bg-[#09090B] border-r border-zinc-800">
+                  <Sidebar onLinkClick={() => setIsMobileMenuOpen(false)} />
+                </div>
+              </div>
+            )}
             
-            <main style={{ flex: 1, overflowY: 'auto', position: 'relative' }}>
+            <main className="flex-1 overflow-y-auto relative w-full">
               {children}
             </main>
-            
           </div>
         </div>
       </LegalGate>
