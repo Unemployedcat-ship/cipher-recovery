@@ -6,20 +6,13 @@ import {
   Transaction,
 } from '@solana/web3.js';
 import { AnchorProvider, Program, BN, Idl } from '@coral-xyz/anchor';
-import { IDL as CipherIDL } from './cipher_idl';
+import CipherIDL from './idl/cipher_auction.json';
 import { TREASURY_WALLET } from './constants';
 
-// ─────────────────────────────────────────────────────────────
-// RPC CONNECTION (robust, with devnet fallback)
-// ─────────────────────────────────────────────────────────────
 const RPC_URL =
   process.env.NEXT_PUBLIC_SOLANA_RPC_URL ||
   process.env.NEXT_PUBLIC_HELIUS_RPC_URL ||
   'https://api.devnet.solana.com';
-
-if (typeof window !== 'undefined') {
-  console.log('[solana/actions] RPC_URL =', RPC_URL);
-}
 
 export const connection = new Connection(RPC_URL, 'confirmed');
 
@@ -28,9 +21,6 @@ export const PROGRAM_ID = new PublicKey(
     'CiphAuCt111111111111111111111111111111111'
 );
 
-// ─────────────────────────────────────────────────────────────
-// HELPERS
-// ─────────────────────────────────────────────────────────────
 export function getCipherProgram(signer: any) {
   const provider = new AnchorProvider(connection, signer, {
     commitment: 'confirmed',
@@ -86,9 +76,6 @@ export async function waitForConfirmation(
   throw new Error('Transaction confirmation timeout');
 }
 
-// ─────────────────────────────────────────────────────────────
-// CREATE AUCTION
-// ─────────────────────────────────────────────────────────────
 export async function createAuctionOnChain(
   signer: any,
   authority: PublicKey,
@@ -111,14 +98,12 @@ export async function createAuctionOnChain(
   const targetLamports = new BN(targetSol * 1_000_000_000);
   const supplyBN = new BN(supply);
 
-  // ⚠️ If your program method args differ, keep your original method call
-  // and only replace the connection/health-check parts above.
   const tx = await program.methods
     .createAuction(
       supplyBN,
       new BN(durationSeconds),
       targetLamports,
-      Array(32).fill(0) // manifest hash placeholder
+      Array(32).fill(0)
     )
     .accounts({
       creator: authority,
@@ -159,9 +144,6 @@ export async function createAuctionOnChain(
   };
 }
 
-// ─────────────────────────────────────────────────────────────
-// SUBMIT BID
-// ─────────────────────────────────────────────────────────────
 export async function submitBidOnChain(
   signer: any,
   bidder: PublicKey,
@@ -201,4 +183,3 @@ export async function submitBidOnChain(
 
   return sig;
 }
-export const createAuction = createAuctionOnChain;
