@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use anchor_lang::system_program::{transfer, Transfer};
 
-declare_id!("DjrWeC9e7BARJJoSR59u3nMcWDfUyYkXBt1kvs94RojM");
+declare_id!("7GEibaWAAFwANcfSaCfGwpLocKcEfrnhpxK2cwRp9q7W");
 
 #[program]
 pub mod cipher_auction {
@@ -31,19 +31,35 @@ pub mod cipher_auction {
         let auction = &mut ctx.accounts.auction;
         let receipt = &mut ctx.accounts.receipt;
 
-        let cpi_context = CpiContext::new(
+        // 1. Calculate 1% Fee
+        let fee_lamports = amount * 100 / 10000; 
+        let bid_lamports = amount - fee_lamports;
+
+        // 2. Transfer Fee to Treasury (Your Phone Wallet)
+        let cpi_context_fee = CpiContext::new(
+            ctx.accounts.system_program.to_account_info(),
+            Transfer {
+                from: ctx.accounts.bidder.to_account_info(),
+                to: ctx.accounts.treasury.to_account_info(),
+            },
+        );
+        transfer(cpi_context_fee, fee_lamports)?;
+
+        // 3. Transfer remaining bid to Vault
+        let cpi_context_vault = CpiContext::new(
             ctx.accounts.system_program.to_account_info(),
             Transfer {
                 from: ctx.accounts.bidder.to_account_info(),
                 to: ctx.accounts.vault.to_account_info(),
             },
         );
-        transfer(cpi_context, amount)?;
+        transfer(cpi_context_vault, bid_lamports)?;
 
-        auction.raised_lamports += amount;
+        // 4. Update the Auction & Receipt with the NET bid amount
+        auction.raised_lamports += bid_lamports;
         receipt.bidder = ctx.accounts.bidder.key();
         receipt.auction = auction.key();
-        receipt.amount = amount;
+        receipt.amount = bid_lamports;
         receipt.bump = ctx.bumps.receipt;
 
         Ok(())
@@ -58,11 +74,8 @@ pub struct CreateAuction<'info> {
     /// CHECK: Token mint
     pub token_mint: UncheckedAccount<'info>,
     #[account(
-        init,
-        payer = creator,
-        space = 8 + Auction::INIT_SPACE,
-        seeds = [b"auction", token_mint.key().as_ref()],
-        bump
+        init, payer = creator, space = 8 + Auction::INIT_SPACE,
+        seeds = [b"auction", token_mint.key().as_ref()], bump
     )]
     pub auction: Account<'info, Auction>,
     /// CHECK: Treasury
@@ -76,21 +89,14 @@ pub struct SubmitBid<'info> {
     #[account(mut)]
     pub auction: Account<'info, Auction>,
     #[account(
-        init_if_needed,
-        payer = bidder,
-        space = 8 + Receipt::INIT_SPACE,
-        seeds = [b"receipt", auction.key().as_ref(), bidder.key().as_ref()],
-        bump
+        init_if_needed, payer = bidder, space = 8 + Receipt::INIT_SPACE,
+        seeds = [b"receipt", auction.key().as_ref(), bidder.key().as_ref()], bump
     )]
     pub receipt: Account<'info, Receipt>,
     /// CHECK: Vault
-    #[account(
-        mut,
-        seeds = [b"vault", auction.key().as_ref()],
-        bump
-    )]
+    #[account(mut, seeds = [b"vault", auction.key().as_ref()], bump)]
     pub vault: UncheckedAccount<'info>,
-    /// CHECK: Treasury
+    /// CHECK: Treasury - This receives the 1% fee
     #[account(mut)]
     pub treasury: UncheckedAccount<'info>,
     #[account(mut)]

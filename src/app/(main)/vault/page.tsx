@@ -5,7 +5,7 @@ import Link from 'next/link';
 import PortfolioChart from '@/components/PortfolioChart';
 import { usePrivy, useWallets } from '@privy-io/react-auth';
 import { useSolanaWallet } from '@/hooks/useSolanaWallet';
-import { connection } from '@/lib/solana/constants';
+import { connection, TREASURY_WALLET } from '@/lib/solana/constants';
 import { PublicKey, SystemProgram, Transaction, LAMPORTS_PER_SOL } from '@solana/web3.js';
 import { 
   Wallet, ShieldCheck, ArrowUpRight, Activity, TrendingUp, 
@@ -94,7 +94,7 @@ export default function VaultPage() {
   return (
     <div className="w-full max-w-[1600px] mx-auto p-4 lg:p-6 flex flex-col gap-6 font-mono text-zinc-300 bg-[#050505] relative">
       
-      {/* Action Modals - REMOVED BACKDROP BLUR FOR ZERO LAG */}
+      {/* Action Modals */}
       {activeAction && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#000000]/95 p-4">
           <div className="w-full max-w-md bg-[#09090B] border border-zinc-800 rounded-sm shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
@@ -152,6 +152,24 @@ export default function VaultPage() {
                 </>
               )}
 
+              {activeAction === 'SWEEP FEES' && (
+                <>
+                  <p className="text-xs text-zinc-400 text-center">All trading fees are automatically routed to your Treasury Wallet.</p>
+                  <div className="bg-[#050505] border border-zinc-800 rounded-sm p-4 flex items-center justify-between gap-4">
+                    <div>
+                      <div className="text-[9px] text-zinc-500 font-black tracking-widest">TREASURY ADDRESS</div>
+                      <span className="font-mono text-sm text-white">{TREASURY_WALLET.toBase58().slice(0, 8)}...{TREASURY_WALLET.toBase58().slice(-8)}</span>
+                    </div>
+                    <button onClick={() => handleCopy(TREASURY_WALLET.toBase58())} className="h-8 w-8 shrink-0 flex items-center justify-center bg-[#111116] border border-zinc-700 rounded-sm hover:border-[#00FF41] hover:text-[#00FF41]">
+                      {copied ? <Check size={14} className="text-[#00FF41]"/> : <Copy size={14} />}
+                    </button>
+                  </div>
+                  <p className="text-[10px] text-zinc-500 text-center leading-relaxed mt-2">
+                    To withdraw your fees, simply import the private key for this address into your phone wallet and transfer the SOL to your personal wallet.
+                  </p>
+                </>
+              )}
+
               {activeAction === 'REFERRAL' && (
                 <>
                   <p className="text-xs text-zinc-400 text-center">Share your referral link and earn 1% of your friends' trading fees forever.</p>
@@ -182,16 +200,16 @@ export default function VaultPage() {
         </div>
         
         <div className="flex items-center gap-3">
-          <Link href="/vault/activity" className="rounded-sm border border-zinc-800 bg-[#09090B] px-4 py-2 text-xs font-black text-zinc-400 hover:text-white transition-colors flex items-center gap-2">
-            <Download size={14} /> EXPORT
-          </Link>
+          <button onClick={() => setActiveAction('SWEEP FEES')} className="rounded-sm border border-zinc-800 bg-[#09090B] px-4 py-2 text-xs font-black text-zinc-400 hover:text-[#00FF41] transition-colors flex items-center gap-2">
+            <Wallet size={14} /> SWEEP FEES
+          </button>
           <button onClick={() => setActiveAction('DEPOSIT')} className="rounded-sm bg-[#00FF41] px-6 py-2 text-xs font-black text-black hover:bg-[#00e03a] transition-all shadow-[0_0_20px_rgba(0,255,65,0.2)] flex items-center gap-2">
-            <Wallet size={14} /> DEPOSIT
+            <ArrowDownRight size={14} /> DEPOSIT
           </button>
         </div>
       </div>
 
-      {/* Top Stats Grid - Removed heavy shadows */}
+      {/* Top Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="border border-zinc-800 bg-[#09090B] p-4 rounded-sm relative overflow-hidden group">
           <div className="text-[9px] text-zinc-500 font-black tracking-widest flex items-center gap-1 mb-1">
