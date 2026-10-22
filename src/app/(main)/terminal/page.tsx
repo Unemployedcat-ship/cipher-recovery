@@ -27,13 +27,13 @@ export default function TerminalPage() {
         </div>
       </div>
 
-      <div className="flex-1 grid grid-cols-1 xl:grid-cols-3 gap-4 overflow-hidden">
+      <div className="flex-1 grid grid-cols-1 xl:grid-cols-3 gap-4 overflow-hidden min-h-0">
         
-        {/* Left Column: Chart & Table */}
-        <div className="xl:col-span-2 flex flex-col gap-4 h-full overflow-hidden">
+        {/* Left Column: Chart & Table (Using Grid to prevent overlap) */}
+        <div className="xl:col-span-2 grid grid-rows-[1fr_240px] gap-4 h-full overflow-hidden">
           
           {/* Live Chart Box */}
-          <div className="flex-1 border border-zinc-800 bg-[#09090B] rounded-sm p-4 relative flex flex-col shadow-[0_0_20px_rgba(0,0,0,0.5)] min-h-0">
+          <div className="border border-zinc-800 bg-[#09090B] rounded-sm p-4 relative flex flex-col shadow-[0_0_20px_rgba(0,0,0,0.5)] overflow-hidden">
             <div className="flex justify-between items-start mb-2 shrink-0">
               <div>
                 <div className="text-[10px] text-zinc-500 font-black tracking-widest">TOTAL PROTOCOL VOLUME</div>
@@ -42,14 +42,14 @@ export default function TerminalPage() {
                 </div>
               </div>
             </div>
-            <div className="flex-1 w-full min-h-0">
+            <div className="flex-1 w-full relative min-h-0">
               <TradingChart />
             </div>
           </div>
 
           {/* Top Gainers Table */}
-          <div className="h-56 border border-zinc-800 bg-[#09090B] rounded-sm flex flex-col overflow-hidden shrink-0">
-            <div className="flex justify-between items-center p-3 border-b border-zinc-800 bg-[#050505]">
+          <div className="border border-zinc-800 bg-[#09090B] rounded-sm flex flex-col overflow-hidden">
+            <div className="flex justify-between items-center p-3 border-b border-zinc-800 bg-[#050505] shrink-0">
               <h2 className="text-[10px] font-black text-white flex items-center gap-2 uppercase tracking-widest"><TrendingUp size={12} className="text-[#00FF41]"/> TOP GAINERS</h2>
             </div>
             <div className="flex-1 overflow-auto">
@@ -84,10 +84,10 @@ export default function TerminalPage() {
         </div>
 
         {/* Right Column: Live Tape & Order Book */}
-        <div className="xl:col-span-1 flex flex-col gap-4 h-full overflow-hidden">
+        <div className="xl:col-span-1 grid grid-rows-2 gap-4 h-full overflow-hidden">
           
           {/* Live Tape */}
-          <div className="flex-1 border border-zinc-800 bg-[#09090B] rounded-sm flex flex-col overflow-hidden shadow-[0_0_20px_rgba(0,0,0,0.5)] min-h-0">
+          <div className="border border-zinc-800 bg-[#09090B] rounded-sm flex flex-col overflow-hidden shadow-[0_0_20px_rgba(0,0,0,0.5)]">
             <div className="flex justify-between items-center p-3 border-b border-zinc-800 bg-[#050505] shrink-0">
               <h2 className="text-[10px] font-black text-white flex items-center gap-2 uppercase tracking-widest"><Zap size={12} className="text-[#FF00FF]"/> LIVE TAPE</h2>
               <div className="flex items-center gap-1 text-[8px] text-[#00FF41] bg-[#00FF41]/10 px-1.5 py-0.5 rounded border border-[#00FF41]/20">
@@ -125,7 +125,7 @@ export default function TerminalPage() {
           </div>
 
           {/* Order Book */}
-          <div className="flex-1 border border-zinc-800 bg-[#09090B] rounded-sm flex flex-col overflow-hidden shadow-[0_0_20px_rgba(0,0,0,0.5)] min-h-0">
+          <div className="border border-zinc-800 bg-[#09090B] rounded-sm flex flex-col overflow-hidden shadow-[0_0_20px_rgba(0,0,0,0.5)]">
              <div className="flex justify-between items-center p-3 border-b border-zinc-800 bg-[#050505] shrink-0">
               <h2 className="text-[10px] font-black text-white flex items-center gap-2 uppercase tracking-widest"><List size={12} className="text-zinc-400"/> ORDER BOOK</h2>
             </div>

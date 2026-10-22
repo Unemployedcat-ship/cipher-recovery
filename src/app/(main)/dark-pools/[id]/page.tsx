@@ -7,7 +7,7 @@ import {
   ArrowLeft, Lock, ShieldCheck, Zap, AlertTriangle, TrendingUp, 
   Droplets, RefreshCcw, Copy, Check, Globe, AtSign, Send, 
   Users, Activity, Wallet, Clock, ArrowUpRight, ArrowDownRight, 
-  BarChart3, List, ShieldAlert
+  BarChart3
 } from 'lucide-react';
 
 export default function DarkPoolDetailPage() {
@@ -49,9 +49,8 @@ export default function DarkPoolDetailPage() {
         <div className="absolute top-0 left-0 w-1/4 h-[2px] bg-gradient-to-r from-[#00FF41] to-transparent"></div>
         
         <div className="flex items-center gap-6 z-10">
-          {/* Token Image */}
-          <div className="h-24 w-24 bg-[#111116] border-2 border-[#00FF41] flex items-center justify-center text-2xl font-black text-[#00FF41] rounded-md shadow-[0_0_30px_rgba(0,255,65,0.2)]"
-               style={{ clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)' }}>
+          {/* Token Image - NOW A PERFECT CIRCLE */}
+          <div className="h-24 w-24 rounded-full bg-[#111116] border-[3px] border-[#00FF41] flex items-center justify-center text-3xl font-black text-[#00FF41] shadow-[0_0_30px_rgba(0,255,65,0.2)]">
             UC
           </div>
           
