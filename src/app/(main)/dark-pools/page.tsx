@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { createClient } from '@supabase/supabase-js';
-import { Lock, Flame, Rocket, TrendingUp, ShieldCheck, Search, Activity, BarChart3 } from 'lucide-react';
+import { Lock, Flame, Rocket, TrendingUp, ShieldCheck, Search, Activity, BarChart3, ArrowUpRight } from 'lucide-react';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -39,11 +39,26 @@ const Sparkline = ({ data, color = "#00FF41" }: { data: number[], color?: string
   );
 };
 
+type Tab = 'pre' | 'post' | 'trending';
+
 export default function ExplorePage() {
-  const [activeTab, setActiveTab] = useState<'pre' | 'post' | 'trending'>('pre');
+  // 1. Initialize state from sessionStorage to keep tab active
+  const [activeTab, setActiveTab] = useState<Tab>(() => {
+    if (typeof window !== 'undefined') {
+      return (sessionStorage.getItem('exploreTab') as Tab) || 'pre';
+    }
+    return 'pre';
+  });
+  
   const [searchQuery, setSearchQuery] = useState('');
   const [tokens, setTokens] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Update sessionStorage whenever tab changes
+  const handleTabChange = (tab: Tab) => {
+    setActiveTab(tab);
+    sessionStorage.setItem('exploreTab', tab);
+  };
 
   const mockData = [
     { id: '1', name: 'Unemployed Cat', symbol: 'UCAT', status: 'active', market_cap: 0, volume_24h: 42000, phase: 'pre', sparkline: [10, 15, 12, 20, 18, 30, 25, 40] },
@@ -92,6 +107,7 @@ export default function ExplorePage() {
   return (
     <div className="w-full max-w-[1600px] mx-auto p-4 lg:p-6 flex flex-col gap-6 font-mono text-zinc-300 bg-[#050505]">
       
+      {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-zinc-800 pb-6 gap-4 relative">
         <div className="absolute bottom-0 left-0 w-1/4 h-[2px] bg-gradient-to-r from-[#00FF41] to-transparent"></div>
         <div>
@@ -121,9 +137,31 @@ export default function ExplorePage() {
         </div>
       </div>
 
+      {/* Hero Banner (Top Token) */}
+      {filteredTokens.length > 0 && activeTab === 'trending' && (
+        <Link href={`/dark-pools/${filteredTokens[0].id}`} className="w-full border border-[#00FF41]/30 bg-gradient-to-r from-[#00FF41]/10 to-[#09090B] rounded-sm p-6 relative overflow-hidden group block">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-[#00FF41]/5 blur-[80px] rounded-full pointer-events-none"></div>
+          <div className="flex justify-between items-center relative z-10">
+            <div className="flex items-center gap-4">
+              <div className="h-16 w-16 bg-[#050505] border border-[#00FF41]/50 rounded-md flex items-center justify-center text-xl font-black text-[#00FF41]">
+                {filteredTokens[0].symbol?.slice(0,2)}
+              </div>
+              <div>
+                <div className="text-[10px] text-[#00FF41] font-black tracking-widest mb-1 flex items-center gap-1"><Flame size={12}/> #1 TRENDING TOKEN</div>
+                <h2 className="text-2xl font-black text-white">{filteredTokens[0].name} <span className="text-zinc-500 text-lg">(${filteredTokens[0].symbol})</span></h2>
+              </div>
+            </div>
+            <div className="text-right hidden md:block">
+              <div className="text-[10px] text-zinc-500 font-black tracking-widest mb-1">24H VOLUME</div>
+              <div className="text-2xl font-black text-[#00FF41]">${filteredTokens[0].volume_24h.toLocaleString()}</div>
+            </div>
+          </div>
+        </Link>
+      )}
+
+      {/* Stats Bar */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="border border-zinc-800 bg-[#09090B] p-4 rounded-sm flex items-center justify-between relative overflow-hidden group">
-          <div className="absolute inset-0 bg-gradient-to-r from-[#00FF41]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
           <div>
             <div className="text-[9px] text-zinc-500 font-black tracking-widest flex items-center gap-1"><BarChart3 size={10} /> ECOSYSTEM VOLUME</div>
             <div className="text-2xl font-black text-white mt-1">$4,209,690</div>
@@ -146,6 +184,7 @@ export default function ExplorePage() {
         </div>
       </div>
 
+      {/* Tabs */}
       <div className="flex items-center gap-2 border-b border-zinc-800 pb-2 overflow-x-auto">
         {[
           { id: 'pre', label: 'Before Graduation', icon: Lock },
@@ -154,7 +193,7 @@ export default function ExplorePage() {
         ].map((tab) => (
           <button
             key={tab.id}
-            onClick={() => setActiveTab(tab.id as Tab)}
+            onClick={() => handleTabChange(tab.id as Tab)}
             className={`flex items-center gap-2 px-4 py-2 text-xs font-black uppercase tracking-wider rounded-sm transition-all whitespace-nowrap ${
               activeTab === tab.id 
                 ? 'bg-[#00FF41]/10 text-[#00FF41] border border-[#00FF41]/30 shadow-[0_0_10px_rgba(0,255,65,0.1)]' 
@@ -169,54 +208,42 @@ export default function ExplorePage() {
         ))}
       </div>
 
+      {/* Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {filteredTokens.length === 0 ? (
-          <div className="col-span-full border border-zinc-800 border-dashed bg-[#09090B] rounded-sm flex flex-col items-center justify-center py-24">
-            <Search className="h-10 w-10 text-zinc-700 mb-4" />
-            <h3 className="text-lg font-black text-white mb-1">NO TOKENS FOUND</h3>
-            <p className="text-xs text-zinc-500">Try adjusting your filters or search.</p>
-          </div>
-        ) : (
-          filteredTokens.map((token: any) => (
-            <Link href={`/dark-pools/${token.id}`} key={token.id} className="group border border-zinc-800 bg-[#09090B] rounded-sm p-4 hover:border-[#00FF41]/60 hover:shadow-[0_0_20px_rgba(0,255,65,0.05)] transition-all block relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-[#00FF41]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
-              
-              <div className="flex items-center gap-3 mb-3 relative z-10">
-                <div className="h-10 w-10 bg-[#111116] border border-zinc-700 text-xs flex items-center justify-center font-black text-[#00FF41] group-hover:border-[#00FF41] transition-colors rounded-md">
-                  {token.symbol?.slice(0,2) || '??'}
-                </div>
-                <div>
-                  <div className="font-bold text-white text-sm truncate w-32">{token.name}</div>
-                  <div className="text-[10px] text-zinc-500 font-mono">${token.symbol}</div>
-                </div>
-                <div className="ml-auto text-right">
-                  <div className={`text-[8px] font-black px-1.5 py-0.5 rounded border ${
-                    token.status === 'graduated' ? 'bg-[#00FF41]/10 text-[#00FF41] border-[#00FF41]/30' : 'bg-amber-500/10 text-amber-500 border-amber-500/30'
-                  }`}>
-                    {token.status === 'graduated' ? 'LIVE' : 'PRE'}
-                  </div>
+        {filteredTokens.map((token: any) => (
+          <Link href={`/dark-pools/${token.id}`} key={token.id} className="group border border-zinc-800 bg-[#09090B] rounded-sm p-4 hover:border-[#00FF41]/60 hover:shadow-[0_0_20px_rgba(0,255,65,0.05)] transition-all block relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-[#00FF41]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+            <div className="flex items-center gap-3 mb-3 relative z-10">
+              <div className="h-10 w-10 bg-[#111116] border border-zinc-700 text-xs flex items-center justify-center font-black text-[#00FF41] group-hover:border-[#00FF41] transition-colors rounded-md">
+                {token.symbol?.slice(0,2) || '??'}
+              </div>
+              <div>
+                <div className="font-bold text-white text-sm truncate w-32">{token.name}</div>
+                <div className="text-[10px] text-zinc-500 font-mono">${token.symbol}</div>
+              </div>
+              <div className="ml-auto text-right">
+                <div className={`text-[8px] font-black px-1.5 py-0.5 rounded border ${
+                  token.status === 'graduated' ? 'bg-[#00FF41]/10 text-[#00FF41] border-[#00FF41]/30' : 'bg-amber-500/10 text-amber-500 border-amber-500/30'
+                }`}>
+                  {token.status === 'graduated' ? 'LIVE' : 'PRE'}
                 </div>
               </div>
-
-              <div className="h-14 mb-3 relative z-10">
-                <Sparkline data={token.sparkline || [10,20,15,30,25]} color={token.status === 'graduated' ? '#00FF41' : '#f59e0b'} />
+            </div>
+            <div className="h-14 mb-3 relative z-10">
+              <Sparkline data={token.sparkline || [10,20,15,30,25]} color={token.status === 'graduated' ? '#00FF41' : '#f59e0b'} />
+            </div>
+            <div className="grid grid-cols-2 gap-2 border-t border-zinc-800/80 pt-2 relative z-10">
+              <div>
+                <div className="text-[8px] text-zinc-600 font-black tracking-widest mb-0.5">MCAP</div>
+                <div className="text-[11px] font-bold text-white">${(token.market_cap || 0).toLocaleString()}</div>
               </div>
-
-              <div className="grid grid-cols-2 gap-2 border-t border-zinc-800/80 pt-2 relative z-10">
-                <div>
-                  <div className="text-[8px] text-zinc-600 font-black tracking-widest mb-0.5">MCAP</div>
-                  <div className="text-[11px] font-bold text-white">${(token.market_cap || 0).toLocaleString()}</div>
-                </div>
-                <div className="text-right">
-                  <div className="text-[8px] text-zinc-600 font-black tracking-widest mb-0.5">24H VOL</div>
-                  <div className="text-[11px] font-bold text-[#00FF41]">
-                    ${(token.volume_24h || 0).toLocaleString()}
-                  </div>
-                </div>
+              <div className="text-right">
+                <div className="text-[8px] text-zinc-600 font-black tracking-widest mb-0.5">24H VOL</div>
+                <div className="text-[11px] font-bold text-[#00FF41]">${(token.volume_24h || 0).toLocaleString()}</div>
               </div>
-            </Link>
-          ))
-        )}
+            </div>
+          </Link>
+        ))}
       </div>
     </div>
   );
