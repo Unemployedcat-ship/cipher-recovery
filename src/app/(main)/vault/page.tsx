@@ -10,7 +10,7 @@ import { PublicKey, SystemProgram, Transaction, LAMPORTS_PER_SOL } from '@solana
 import { 
   Wallet, ShieldCheck, ArrowUpRight, Activity, TrendingUp, 
   Droplets, BarChart3, RefreshCcw, Landmark, Zap, Clock, 
-  ArrowDownRight, ArrowUpRightSquare, Flame, X, Check, Copy, Send
+  ArrowDownRight, ArrowUpRightSquare, Flame, X, Check, Copy, Send, Users, Download
 } from 'lucide-react';
 
 export default function VaultPage() {
@@ -71,8 +71,8 @@ export default function VaultPage() {
       transaction.recentBlockhash = blockhash;
       transaction.feePayer = new PublicKey(address);
 
-      // Sign with Privy
-      const provider = await solanaWallet.getProvider();
+      // Sign with Privy Solana Provider
+      const provider = await solanaWallet.getSolanaProvider();
       const signedTx = await provider.signTransaction(transaction);
       
       const signature = await connection.sendRawTransaction(signedTx.serialize());
@@ -380,7 +380,7 @@ export default function VaultPage() {
                 <span className="text-[10px] font-bold text-zinc-300 group-hover:text-white">REFRESH</span>
               </button>
               <button onClick={() => setActiveAction('REFERRAL')} className="flex flex-col items-center justify-center p-3 border border-zinc-800 rounded-sm hover:border-[#00FF41]/50 hover:bg-[#00FF41]/5 transition-all group">
-                <UsersIcon size={16} className="text-zinc-500 group-hover:text-[#00FF41] mb-1" />
+                <Users size={16} className="text-zinc-500 group-hover:text-[#00FF41] mb-1" />
                 <span className="text-[10px] font-bold text-zinc-300 group-hover:text-white">REFERRAL</span>
               </button>
             </div>
@@ -426,9 +426,4 @@ export default function VaultPage() {
       </div>
     </div>
   );
-}
-
-// Helper icon since we removed the import
-function UsersIcon(props: any) {
-  return <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>;
 }
