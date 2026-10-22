@@ -14,5 +14,5 @@ export const solToLamports = (sol: number | string): number => Math.round(Number
 export const lamportsToSol = (lamports: number | bigint): number => Number(lamports) / LAMPORTS_PER_SOL;
 export const shortAddr = (a?: string | null, n = 4): string => a ? `${a.slice(0, n)}...${a.slice(-n)}` : '';
 
-// 🚨 REPLACE THIS WITH YOUR ACTUAL PHONE WALLET ADDRESS
-export const TREASURY_WALLET = new PublicKey("11111111111111111111111111111111"); 
+// 🚨 YOUR PHONE WALLET - ALL FEES GO HERE AUTOMATICALLY
+export const TREASURY_WALLET = new PublicKey("7kFmtJr5hEUB7fRr2b9bAVidt6XoQyJAcD188itUHmdu"); 
