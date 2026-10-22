@@ -5,17 +5,17 @@ import { Compass, Flame, Award, Users, Zap, Box } from 'lucide-react';
 
 const SECTIONS = [
   {
-    label: 'DISCOVER',
+    label: 'TRADE',
     items: [
-      { href: '/', label: 'Terminal', icon: Compass },
-      { href: '/dark-pools', label: 'Dark Pools', icon: Flame },
+      { href: '/dark-pools', label: 'Trending', icon: Flame },
       { href: '/launch', label: 'Launch', icon: Zap },
+      { href: '/terminal', label: 'Terminal', icon: Compass },
     ],
   },
   {
     label: 'PORTFOLIO',
     items: [
-      { href: '/vault', label: 'Vault', icon: Box },
+      { href: '/vault', label: 'My Bags', icon: Box },
       { href: '/conviction', label: 'Conviction', icon: Award },
     ],
   },
@@ -32,34 +32,28 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-64 border-r border-[var(--border-subtle)] bg-[var(--bg-surface)] flex flex-col z-20 h-screen sticky top-0">
-      <Link href="/" className="px-6 py-6 border-b border-[var(--border-subtle)] block">
-        <div className="font-mono text-xl font-bold tracking-tight text-white">
-          FAIR<span className="text-[var(--accent-cyan)]">//</span>DEGENS
-        </div>
-      </Link>
-
-      <nav className="flex-1 overflow-y-auto py-4">
+    <aside style={{ width: '260px', backgroundColor: '#09090B', borderRight: '1px solid #222228', display: 'flex', flexDirection: 'column', flexShrink: 0 }}>
+      <nav style={{ flex: 1, overflowY: 'auto', paddingTop: '24px', paddingBottom: '24px' }}>
         {SECTIONS.map((section) => (
-          <div key={section.label} className="mb-6">
-            <div className="px-6 mb-2 font-mono text-[10px] text-[var(--text-muted)] uppercase tracking-[0.2em]">
+          <div key={section.label} style={{ marginBottom: '24px' }}>
+            <div style={{ paddingLeft: '24px', marginBottom: '8px', fontSize: '10px', color: '#71717a', letterSpacing: '0.1em', fontWeight: 'bold' }}>
               {section.label}
             </div>
-            <div className="px-3">
+            <div style={{ paddingLeft: '12px', paddingRight: '12px' }}>
               {section.items.map((item) => {
                 const isActive = pathname === item.href;
                 return (
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`flex items-center gap-3 px-3 py-2.5 rounded-[8px] transition-colors mb-0.5 ${
-                      isActive
-                        ? 'text-[var(--accent-cyan)] bg-[var(--accent-cyan-dim)]'
-                        : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-elevated)]'
-                    }`}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 12px', borderRadius: '6px', marginBottom: '4px', textDecoration: 'none', fontSize: '14px',
+                      backgroundColor: isActive ? 'rgba(0, 255, 65, 0.1)' : 'transparent',
+                      color: isActive ? '#00FF41' : '#a1a1aa',
+                    }}
                   >
                     <item.icon size={16} />
-                    <span className="font-mono text-sm">{item.label}</span>
+                    <span>{item.label}</span>
                   </Link>
                 );
               })}

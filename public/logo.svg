@@ -1,26 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <!-- Outer Shield / Hood -->
-  <path d="M 50 5 L 85 20 C 85 60 85 80 50 95 C 15 80 15 60 15 20 Z" fill="#0A0A0F" stroke="#00FF41" stroke-width="3" stroke-linejoin="round"/>
-  
-  <!-- Cat Ears -->
-  <polygon points="30,25 22,8 45,22" fill="#0A0A0F" stroke="#00FF41" stroke-width="3" stroke-linejoin="round"/>
-  <polygon points="70,25 78,8 55,22" fill="#0A0A0F" stroke="#00FF41" stroke-width="3" stroke-linejoin="round"/>
-
-  <!-- Cat Face Base -->
-  <path d="M 28 40 Q 50 35 72 40 Q 75 60 50 75 Q 25 60 28 40 Z" fill="#121217" stroke="#00FF41" stroke-width="2"/>
-
-  <!-- Hacker Visor -->
-  <path d="M 30 45 L 70 45 L 68 55 L 32 55 Z" fill="#FF00FF" opacity="0.8"/>
-  <path d="M 30 45 L 70 45 L 68 55 L 32 55 Z" fill="none" stroke="#FF00FF" stroke-width="2"/>
-  
-  <!-- Glowing Eyes (Inside Visor) -->
-  <polygon points="35,47 45,50 35,52" fill="#00FF41" />
-  <polygon points="65,47 55,50 65,52" fill="#00FF41" />
-
-  <!-- Smirk -->
-  <path d="M 40 65 Q 50 70 60 65" fill="none" stroke="#00FF41" stroke-width="2" stroke-linecap="round"/>
-  
-  <!-- Whiskers -->
-  <line x1="18" y1="55" x2="28" y2="58" stroke="#00FF41" stroke-width="1.5" />
-  <line x1="82" y1="55" x2="72" y2="58" stroke="#00FF41" stroke-width="1.5" />
+  <!-- Hexagon Base -->
+  <polygon points="50,5 95,27.5 95,72.5 50,95 5,72.5 5,27.5" fill="#0A0A0F" stroke="#00FF41" stroke-width="3"/>
+  <!-- Cyber Cat Ears -->
+  <polygon points="25,25 15,10 40,20" fill="#0A0A0F" stroke="#00FF41" stroke-width="3" stroke-linejoin="round"/>
+  <polygon points="75,25 85,10 60,20" fill="#0A0A0F" stroke="#00FF41" stroke-width="3" stroke-linejoin="round"/>
+  <!-- Hacker Visor (Magenta Glow) -->
+  <path d="M 25 40 L 75 40 L 70 55 L 30 55 Z" fill="#FF00FF" opacity="0.8"/>
+  <!-- Glowing Eyes -->
+  <polygon points="30,44 45,47 30,50" fill="#00FF41" />
+  <polygon points="70,44 55,47 70,50" fill="#00FF41" />
+  <!-- Cyber Smirk -->
+  <path d="M 40 65 L 60 65 L 50 75 Z" fill="none" stroke="#00FF41" stroke-width="2" stroke-linejoin="round"/>
+  <!-- Data Nodes -->
+  <circle cx="15" cy="50" r="2" fill="#00FF41"/>
+  <circle cx="85" cy="50" r="2" fill="#00FF41"/>
 </svg>
