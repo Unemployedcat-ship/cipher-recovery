@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { createClient } from '@supabase/supabase-js';
-import { Lock, Flame, Rocket, TrendingUp, ShieldCheck, Search, Activity, BarChart3, ArrowUpRight } from 'lucide-react';
+import { Lock, Flame, Rocket, TrendingUp, ShieldCheck, Search, Activity, Users } from 'lucide-react';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -42,7 +42,6 @@ const Sparkline = ({ data, color = "#00FF41" }: { data: number[], color?: string
 type Tab = 'pre' | 'post' | 'trending';
 
 export default function ExplorePage() {
-  // 1. Initialize state from sessionStorage to keep tab active
   const [activeTab, setActiveTab] = useState<Tab>(() => {
     if (typeof window !== 'undefined') {
       return (sessionStorage.getItem('exploreTab') as Tab) || 'pre';
@@ -53,8 +52,10 @@ export default function ExplorePage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [tokens, setTokens] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  
+  // --- NEW: Active Users Live State ---
+  const [activeUsers, setActiveUsers] = useState(1420);
 
-  // Update sessionStorage whenever tab changes
   const handleTabChange = (tab: Tab) => {
     setActiveTab(tab);
     sessionStorage.setItem('exploreTab', tab);
@@ -66,6 +67,19 @@ export default function ExplorePage() {
     { id: '3', name: 'Doge Killer', symbol: 'DOGEK', status: 'graduated', market_cap: 890000, volume_24h: 120000, phase: 'post', sparkline: [30, 25, 20, 22, 15, 10, 12, 8] },
     { id: '4', name: 'Pepe 2.0', symbol: 'PEPE2', status: 'active', market_cap: 0, volume_24h: 15000, phase: 'pre', sparkline: [5, 5, 5, 5, 5, 5, 5, 5] },
   ];
+
+  // --- SIMULATE LIVE ACTIVE USERS ---
+  useEffect(() => {
+    // In the future, replace this with a Supabase Realtime subscription to a 'presence' or 'active_sessions' table
+    const interval = setInterval(() => {
+      // Randomly add or remove between -2 and +5 users every 3 seconds
+      setActiveUsers(prev => {
+        const change = Math.floor(Math.random() * 8) - 2;
+        return Math.max(prev + change, 100); // Never drop below 100
+      });
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const fetchTokens = async () => {
@@ -137,7 +151,7 @@ export default function ExplorePage() {
         </div>
       </div>
 
-      {/* Hero Banner (Top Token) */}
+      {/* Hero Banner */}
       {filteredTokens.length > 0 && activeTab === 'trending' && (
         <Link href={`/dark-pools/${filteredTokens[0].id}`} className="w-full border border-[#00FF41]/30 bg-gradient-to-r from-[#00FF41]/10 to-[#09090B] rounded-sm p-6 relative overflow-hidden group block">
           <div className="absolute top-0 right-0 w-64 h-64 bg-[#00FF41]/5 blur-[80px] rounded-full pointer-events-none"></div>
@@ -161,13 +175,23 @@ export default function ExplorePage() {
 
       {/* Stats Bar */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        
+        {/* UPDATED: Active Users Stat */}
         <div className="border border-zinc-800 bg-[#09090B] p-4 rounded-sm flex items-center justify-between relative overflow-hidden group">
+          <div className="absolute inset-0 bg-gradient-to-r from-[#00FF41]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
           <div>
-            <div className="text-[9px] text-zinc-500 font-black tracking-widest flex items-center gap-1"><BarChart3 size={10} /> ECOSYSTEM VOLUME</div>
-            <div className="text-2xl font-black text-white mt-1">$4,209,690</div>
+            <div className="text-[9px] text-zinc-500 font-black tracking-widest flex items-center gap-1"><Users size={10} /> ACTIVE USERS</div>
+            <div className="text-2xl font-black text-white mt-1 flex items-center gap-2">
+              {activeUsers.toLocaleString()}
+              <span className="flex h-2 w-2 relative">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00FF41] opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#00FF41]"></span>
+              </span>
+            </div>
           </div>
           <Activity className="text-[#00FF41] opacity-20" size={32} />
         </div>
+
         <div className="border border-zinc-800 bg-[#09090B] p-4 rounded-sm flex items-center justify-between relative overflow-hidden group">
           <div>
             <div className="text-[9px] text-zinc-500 font-black tracking-widest flex items-center gap-1"><Lock size={10} /> PRE-GRADUATION</div>
