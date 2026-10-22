@@ -3,13 +3,13 @@ import { Users, Plus, Shield, TrendingUp } from 'lucide-react';
 
 export default function SyndicatesPage() {
   return (
-    <div className="p-8 font-mono text-zinc-300 w-full max-w-7xl mx-auto">
-      <div className="flex justify-between items-end mb-8">
+    <div className="p-4 md:p-8 font-mono text-zinc-300 w-full max-w-7xl mx-auto overflow-x-hidden">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
         <div>
           <h1 className="text-2xl font-bold text-white flex items-center gap-2"><Users className="text-[#00FF41]"/> SYNDICATES</h1>
           <p className="text-sm text-zinc-500 mt-1">Private alpha groups. High-tier allocations. Powered by FHE.</p>
         </div>
-        <button className="bg-[#00FF41] text-black font-bold text-xs px-4 py-2 rounded hover:bg-[#00e03a] transition-colors flex items-center gap-2">
+        <button className="w-full md:w-auto bg-[#00FF41] text-black font-bold text-xs px-4 py-3 md:py-2 rounded hover:bg-[#00e03a] transition-colors flex items-center justify-center gap-2">
           <Plus size={14} /> CREATE SYNDICATE
         </button>
       </div>

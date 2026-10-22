@@ -34,7 +34,7 @@ export default function CommunityPage() {
       </div>
 
       {/* Chat Area */}
-      <div className="flex-1 border border-zinc-800 bg-[#09090B] rounded-lg flex flex-col overflow-hidden min-h-[400px]">
+      <div className="flex-1 border border-zinc-800 bg-[#09090B] rounded-lg flex flex-col overflow-hidden h-[calc(100vh-200px)] md:h-auto">
         <div className="p-3 md:p-4 border-b border-zinc-800 flex justify-between items-center bg-[#111116]">
           <div className="flex items-center gap-2 text-white font-bold"><Hash size={16} className="text-[#00FF41]" /> {activeChannel}</div>
           <div className="text-[10px] text-[#00FF41] bg-[#00FF41]/10 px-2 py-1 rounded border border-[#00FF41]/20 flex items-center gap-1">
