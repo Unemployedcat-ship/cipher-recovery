@@ -1,5 +1,5 @@
 'use client';
-import { Activity, TrendingUp, Zap, ArrowUpRight, BarChart3, ChevronRight } from 'lucide-react';
+import { Activity, TrendingUp, Zap, ArrowUpRight, BarChart3, ChevronRight, ArrowDownRight, List } from 'lucide-react';
 import Link from 'next/link';
 import TradingChart from '@/components/TradingChart';
 
@@ -15,7 +15,7 @@ export default function TerminalPage() {
             <Activity className="h-3 w-3" /> GLOBAL ECOSYSTEM METRICS
           </div>
           <h1 className="text-2xl font-black tracking-tight text-white uppercase flex items-center gap-3">
-            MARKET PULSE
+            TRADING DESK
             <span className="text-[9px] bg-[#00FF41]/10 text-[#00FF41] px-2 py-0.5 rounded border border-[#00FF41]/30">LIVE_DATA</span>
           </h1>
         </div>
@@ -94,51 +94,79 @@ export default function TerminalPage() {
 
         </div>
 
-        {/* Right Column: Live Tape */}
-        <div className="xl:col-span-1 border border-zinc-800 bg-[#09090B] rounded-sm flex flex-col h-[calc(100vh-180px)] max-h-[700px] overflow-hidden shadow-[0_0_20px_rgba(0,0,0,0.5)]">
+        {/* Right Column: Live Tape & Order Book */}
+        <div className="xl:col-span-1 flex flex-col gap-6">
           
-          <div className="flex justify-between items-center p-4 border-b border-zinc-800 bg-[#050505] shrink-0">
-            <h2 className="text-xs font-black text-white flex items-center gap-2 uppercase tracking-widest"><Zap size={14} className="text-[#FF00FF]"/> LIVE TAPE</h2>
-            <div className="flex items-center gap-1 text-[9px] text-[#00FF41] bg-[#00FF41]/10 px-2 py-0.5 rounded border border-[#00FF41]/20">
-              <div className="h-1.5 w-1.5 bg-[#00FF41] rounded-full animate-pulse"></div> CONNECTED
+          {/* Live Tape */}
+          <div className="border border-zinc-800 bg-[#09090B] rounded-sm flex flex-col h-[300px] overflow-hidden shadow-[0_0_20px_rgba(0,0,0,0.5)]">
+            <div className="flex justify-between items-center p-4 border-b border-zinc-800 bg-[#050505] shrink-0">
+              <h2 className="text-xs font-black text-white flex items-center gap-2 uppercase tracking-widest"><Zap size={14} className="text-[#FF00FF]"/> LIVE TAPE</h2>
+              <div className="flex items-center gap-1 text-[9px] text-[#00FF41] bg-[#00FF41]/10 px-2 py-0.5 rounded border border-[#00FF41]/20">
+                <div className="h-1.5 w-1.5 bg-[#00FF41] rounded-full animate-pulse"></div> CONNECTED
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-4 text-[9px] text-zinc-500 border-b border-zinc-800 bg-[#09090B] px-4 py-2 font-black tracking-wider uppercase shrink-0">
+              <div className="col-span-1">TIME</div>
+              <div className="col-span-1">TYPE</div>
+              <div className="col-span-1 text-right">PRICE</div>
+              <div className="col-span-1 text-right">AMT</div>
+            </div>
+
+            <div className="flex-1 overflow-y-auto font-mono text-[11px]">
+              {[
+                { time: '12:22:01', type: 'BUY', price: '0.000042', amt: '1.25', color: 'text-[#00FF41]', bg: 'bg-[#00FF41]/5' },
+                { time: '12:21:55', type: 'SELL', price: '0.000041', amt: '0.50', color: 'text-red-400', bg: 'bg-red-500/5' },
+                { time: '12:21:42', type: 'BUY', price: '0.000042', amt: '3.10', color: 'text-[#00FF41]', bg: 'bg-[#00FF41]/5' },
+                { time: '12:21:30', type: 'BUY', price: '0.000040', amt: '0.15', color: 'text-[#00FF41]', bg: 'bg-[#00FF41]/5' },
+                { time: '12:21:12', type: 'SELL', price: '0.000039', amt: '1.00', color: 'text-red-400', bg: 'bg-red-500/5' },
+                { time: '12:20:58', type: 'BUY', price: '0.000041', amt: '5.00', color: 'text-[#00FF41]', bg: 'bg-[#00FF41]/5' },
+              ].map((trade, i) => (
+                <div key={i} className={`grid grid-cols-4 px-4 py-2 border-b border-zinc-800/30 hover:bg-zinc-800 transition-colors cursor-default ${trade.bg}`}>
+                  <div className="col-span-1 text-zinc-500">{trade.time}</div>
+                  <div className={`col-span-1 font-bold ${trade.color}`}>{trade.type}</div>
+                  <div className="col-span-1 text-right text-zinc-300">{trade.price}</div>
+                  <div className="col-span-1 text-right text-zinc-400">{trade.amt}</div>
+                </div>
+              ))}
             </div>
           </div>
-          
-          <div className="grid grid-cols-4 text-[9px] text-zinc-500 border-b border-zinc-800 bg-[#09090B] px-4 py-2 font-black tracking-wider uppercase shrink-0">
-            <div className="col-span-1">TIME</div>
-            <div className="col-span-1">TYPE</div>
-            <div className="col-span-1 text-right">PRICE</div>
-            <div className="col-span-1 text-right">AMT</div>
-          </div>
 
-          <div className="flex-1 overflow-y-auto font-mono text-[11px]">
-            {[
-              { time: '12:22:01', type: 'BUY', price: '0.000042', amt: '1.25', color: 'text-[#00FF41]', bg: 'bg-[#00FF41]/5' },
-              { time: '12:21:55', type: 'SELL', price: '0.000041', amt: '0.50', color: 'text-red-400', bg: 'bg-red-500/5' },
-              { time: '12:21:42', type: 'BUY', price: '0.000042', amt: '3.10', color: 'text-[#00FF41]', bg: 'bg-[#00FF41]/5' },
-              { time: '12:21:30', type: 'BUY', price: '0.000040', amt: '0.15', color: 'text-[#00FF41]', bg: 'bg-[#00FF41]/5' },
-              { time: '12:21:12', type: 'SELL', price: '0.000039', amt: '1.00', color: 'text-red-400', bg: 'bg-red-500/5' },
-              { time: '12:20:58', type: 'BUY', price: '0.000041', amt: '5.00', color: 'text-[#00FF41]', bg: 'bg-[#00FF41]/5' },
-              { time: '12:20:44', type: 'BUY', price: '0.000041', amt: '0.80', color: 'text-[#00FF41]', bg: 'bg-[#00FF41]/5' },
-              { time: '12:20:31', type: 'SELL', price: '0.000038', amt: '2.50', color: 'text-red-400', bg: 'bg-red-500/5' },
-              { time: '12:20:15', type: 'BUY', price: '0.000040', amt: '1.10', color: 'text-[#00FF41]', bg: 'bg-[#00FF41]/5' },
-              { time: '12:20:02', type: 'BUY', price: '0.000040', amt: '0.20', color: 'text-[#00FF41]', bg: 'bg-[#00FF41]/5' },
-              { time: '12:19:50', type: 'SELL', price: '0.000037', amt: '4.20', color: 'text-red-400', bg: 'bg-red-500/5' },
-              { time: '12:19:41', type: 'BUY', price: '0.000039', amt: '0.55', color: 'text-[#00FF41]', bg: 'bg-[#00FF41]/5' },
-            ].map((trade, i) => (
-              <div key={i} className={`grid grid-cols-4 px-4 py-2 border-b border-zinc-800/30 hover:bg-zinc-800 transition-colors cursor-default ${trade.bg}`}>
-                <div className="col-span-1 text-zinc-500">{trade.time}</div>
-                <div className={`col-span-1 font-bold ${trade.color}`}>{trade.type}</div>
-                <div className="col-span-1 text-right text-zinc-300">{trade.price}</div>
-                <div className="col-span-1 text-right text-zinc-400">{trade.amt}</div>
-              </div>
-            ))}
-          </div>
-          
-          <div className="p-4 border-t border-zinc-800 bg-[#050505] shrink-0">
-             <Link href="/launch" className="w-full rounded-sm border border-[#00FF41]/50 bg-[#00FF41]/5 px-4 py-2.5 text-[10px] font-black text-[#00FF41] hover:bg-[#00FF41]/20 transition-all flex items-center justify-center gap-2 group shadow-[0_0_15px_rgba(0,255,65,0.1)]">
-                <BarChart3 size={14} className="group-hover:animate-pulse" /> TRADE ON TERMINAL
-             </Link>
+          {/* Order Book */}
+          <div className="border border-zinc-800 bg-[#09090B] rounded-sm flex flex-col h-[300px] overflow-hidden shadow-[0_0_20px_rgba(0,0,0,0.5)]">
+             <div className="flex justify-between items-center p-4 border-b border-zinc-800 bg-[#050505] shrink-0">
+              <h2 className="text-xs font-black text-white flex items-center gap-2 uppercase tracking-widest"><List size={14} className="text-zinc-400"/> ORDER BOOK</h2>
+            </div>
+            
+            <div className="flex-1 flex flex-col justify-center p-4">
+               {/* Asks (Sells) */}
+               <div className="space-y-1 mb-2">
+                  {[0.000045, 0.000044, 0.000043].map((p, i) => (
+                    <div key={i} className="flex justify-between text-[10px] font-mono relative py-0.5">
+                       <div className="absolute right-0 top-0 h-full bg-red-500/10" style={{ width: `${Math.random() * 80 + 10}%` }}></div>
+                       <span className="text-red-400 relative z-10">{p.toFixed(6)}</span>
+                       <span className="text-zinc-400 relative z-10">{(Math.random() * 500).toFixed(0)}</span>
+                    </div>
+                  ))}
+               </div>
+               
+               {/* Spread */}
+               <div className="flex justify-between items-center py-2 border-y border-zinc-800 my-2">
+                  <span className="text-sm font-black text-[#00FF41]">0.000042</span>
+                  <span className="text-[9px] text-zinc-500 font-bold">SPREAD: 0.000001</span>
+               </div>
+               
+               {/* Bids (Buys) */}
+               <div className="space-y-1 mt-2">
+                  {[0.000041, 0.000040, 0.000039].map((p, i) => (
+                    <div key={i} className="flex justify-between text-[10px] font-mono relative py-0.5">
+                       <div className="absolute right-0 top-0 h-full bg-[#00FF41]/10" style={{ width: `${Math.random() * 80 + 10}%` }}></div>
+                       <span className="text-[#00FF41] relative z-10">{p.toFixed(6)}</span>
+                       <span className="text-zinc-400 relative z-10">{(Math.random() * 500).toFixed(0)}</span>
+                    </div>
+                  ))}
+               </div>
+            </div>
           </div>
 
         </div>
