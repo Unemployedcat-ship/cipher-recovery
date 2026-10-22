@@ -1,6 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
-  <!-- Hexagon Background -->
-  <polygon points="50,5 95,27.5 95,72.5 50,95 5,72.5 5,27.5" stroke="#00FF94" stroke-width="4" fill="#0A0A0F"/>
-  <!-- Abstract F/D Monogram -->
-  <path d="M35 30 H65 M35 30 V70 M35 50 H55 M65 50 V70 H45" stroke="#00FF94" stroke-width="6" stroke-linecap="square" stroke-linejoin="miter"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Geometric Cyber Cat Head -->
+  <path d="M 20,40 L 20,20 L 40,35 C 45,32 55,32 60,35 L 80,20 L 80,40 C 90,50 90,70 80,85 C 65,100 35,100 20,85 C 10,70 10,50 20,40 Z" fill="#0A0A0F" stroke="#00FF41" stroke-width="4" stroke-linejoin="round"/>
+  
+  <!-- Laser Eyes (Magenta) -->
+  <polygon points="30,50 45,55 30,60" fill="#FF00FF" />
+  <polygon points="70,50 55,55 70,60" fill="#FF00FF" />
+  
+  <!-- Cyber Whiskers/Terminal lines -->
+  <line x1="10" y1="65" x2="25" y2="65" stroke="#00FF41" stroke-width="2" />
+  <line x1="90" y1="65" x2="75" y2="65" stroke="#00FF41" stroke-width="2" />
+  
+  <!-- Nose -->
+  <polygon points="50,65 45,70 55,70" fill="#00FF41" />
 </svg>

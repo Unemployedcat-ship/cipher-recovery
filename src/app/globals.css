@@ -1,26 +1,23 @@
-@import "tailwindcss";
-
-@theme {
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-  --background: #05050A;
-  --foreground: #ededed;
+  --bg-void: #050505;
+  --bg-surface: #0a0a0f;
+  --bg-elevated: #121217;
+  --border-subtle: #222228;
+  --text-primary: #ffffff;
+  --text-secondary: #a1a1aa;
+  --text-muted: #52525b;
+  
+  /* New FairDegens Cyberpunk Palette */
+  --accent-cyan: #00FF41; /* Matrix Lime Green */
+  --accent-cyan-dim: rgba(0, 255, 65, 0.1);
+  --accent-magenta: #FF00FF; /* Laser Magenta */
 }
 
 body {
-  background-color: var(--background);
-  color: var(--foreground);
-}
-
-/* Remove ugly number input arrows */
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-input[type="number"] {
-  -moz-appearance: textfield;
+  background-color: var(--bg-void);
+  color: var(--text-primary);
 }
