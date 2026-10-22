@@ -1,21 +1,17 @@
 @import "tailwindcss";
-@config "../../tailwind.config.ts";
 
-:root {
-  --bg-void: #050505;
-  --bg-surface: #0a0a0f;
-  --bg-elevated: #121217;
-  --border-subtle: #222228;
-  --text-primary: #ffffff;
-  --text-secondary: #a1a1aa;
-  --text-muted: #52525b;
-  
-  --accent-cyan: #00FF41; 
-  --accent-cyan-dim: rgba(0, 255, 65, 0.1);
-  --accent-magenta: #FF00FF; 
+@theme {
+  --color-bg-void: #050505;
+  --color-bg-surface: #0a0a0f;
+  --color-bg-elevated: #121217;
+  --color-border-subtle: #222228;
+  --color-accent: #00FF41;
+  --color-accent-dim: rgba(0, 255, 65, 0.1);
+  --color-magenta: #FF00FF;
 }
 
 body {
-  background-color: var(--bg-void);
-  color: var(--text-primary);
+  background-color: var(--color-bg-void);
+  color: #ffffff;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }

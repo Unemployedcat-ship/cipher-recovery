@@ -5,7 +5,7 @@ import { usePrivy } from '@privy-io/react-auth';
 import { useSupabase } from '@/components/SupabaseProvider';
 import { useSolanaWallet } from '@/hooks/useSolanaWallet';
 import { PublicKey } from '@solana/web3.js';
-import { ChevronDown, User, Shield, LogOut, Wallet, Copy, Check, Settings, PlusSquare } from 'lucide-react';
+import { ChevronDown, User, LogOut, Wallet, Copy, Check, Settings } from 'lucide-react';
 import Link from 'next/link';
 import { connection } from '@/lib/solana/constants';
 
@@ -62,73 +62,64 @@ export function TopBar() {
   };
 
   const displayName = profileData?.username || (address ? `${address.slice(0, 4)}...${address.slice(-4)}` : 'Degen');
-  const clanTag = profileData?.syndicate_tag;
 
   return (
-    <div className="flex items-center justify-between px-6 py-3 border-b border-zinc-800 bg-[#09090B] relative z-50">
+    // Using inline styles to FORCE the layout to be horizontal
+    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: '12px 24px', borderBottom: '1px solid #222228', backgroundColor: '#09090B', position: 'relative', zIndex: 50 }}>
       
-      {/* LOGO & BRANDING */}
-      <Link href="/" className="flex items-center gap-3 group">
-        <img src="/logo.svg" alt="FairDegens" className="h-9 w-9 group-hover:scale-105 transition-transform" />
-        <div className="flex flex-col leading-none">
-          <span className="font-mono text-xl text-white font-black tracking-wider transition-colors">
-            FAIR<span className="text-[#00FF41]">//</span>DEGENS
+      <Link href="/" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '12px', textDecoration: 'none' }}>
+        <img src="/logo.svg" alt="FairDegens" style={{ height: '40px', width: '40px' }} />
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <span style={{ color: 'white', fontWeight: 900, fontSize: '20px', letterSpacing: '1px' }}>
+            FAIR<span style={{ color: '#00FF41' }}>//</span>DEGENS
           </span>
-          <span className="text-[8px] text-[#00FF41] tracking-[0.35em] mt-1 font-mono uppercase font-bold">
+          <span style={{ color: '#00FF41', fontSize: '8px', letterSpacing: '3px', textTransform: 'uppercase', fontWeight: 'bold', marginTop: '2px' }}>
             Anti-Snipe Protocol
           </span>
         </div>
       </Link>
 
-      {/* WALLET / LOGIN */}
-      <div className="flex items-center gap-4">
+      <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '16px' }}>
         {!authenticated ? (
-          <button onClick={login} className="flex items-center gap-2 px-5 py-2 bg-[#00FF41] text-black font-bold font-mono text-xs rounded hover:bg-[#00e03a] transition-all shadow-[0_0_15px_rgba(0,255,65,0.3)]">
+          <button onClick={login} style={{ backgroundColor: '#00FF41', color: 'black', fontWeight: 'bold', fontSize: '12px', padding: '8px 20px', borderRadius: '4px', border: 'none', cursor: 'pointer', boxShadow: '0 0 15px rgba(0,255,65,0.3)' }}>
             CONNECT IDENTITY
           </button>
         ) : !address ? (
-          <button onClick={() => createWallet()} disabled={!solanaReady} className="flex items-center gap-2 px-4 py-2 bg-amber-400 text-black font-bold font-mono text-xs rounded hover:bg-amber-500 transition-colors disabled:opacity-50">
-            <Wallet size={14} /> CREATE WALLET
+          <button onClick={() => createWallet()} disabled={!solanaReady} style={{ backgroundColor: '#FBBF24', color: 'black', fontWeight: 'bold', fontSize: '12px', padding: '8px 20px', borderRadius: '4px', border: 'none', cursor: 'pointer' }}>
+            CREATE WALLET
           </button>
         ) : (
-          <div className="relative" ref={dropdownRef}>
-            <button onClick={() => setIsOpen(!isOpen)} className="flex items-center gap-3 px-3 py-1.5 rounded-md border border-zinc-800 hover:border-[#00FF41]/50 transition-colors bg-[#111116]">
-              <div className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00FF41] opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#00FF41]"></span>
-              </div>
-              
-              {clanTag && <span className="text-[10px] font-mono font-bold text-[#00FF41] bg-[#00FF41]/10 px-1.5 py-0.5 rounded border border-[#00FF41]/20">[{clanTag}]</span>}
-              <span className="text-xs font-mono text-zinc-300">{displayName}</span>
-              
-              <span className="flex items-center gap-1 text-xs font-mono text-[#00FF41] font-bold bg-[#00FF41]/10 px-2 py-1 rounded">
+          <div style={{ position: 'relative' }} ref={dropdownRef}>
+            <button onClick={() => setIsOpen(!isOpen)} style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '12px', backgroundColor: '#111116', border: '1px solid #222228', borderRadius: '4px', padding: '6px 12px', cursor: 'pointer' }}>
+              <div style={{ height: '8px', width: '8px', backgroundColor: '#00FF41', borderRadius: '50%' }}></div>
+              <span style={{ color: '#d4d4d8', fontSize: '12px' }}>{displayName}</span>
+              <span style={{ color: '#00FF41', fontSize: '12px', fontWeight: 'bold', backgroundColor: 'rgba(0,255,65,0.1)', padding: '4px 8px', borderRadius: '4px' }}>
                 {liveBalance !== null ? liveBalance.toFixed(2) : '0.00'} SOL
               </span>
-              
-              <ChevronDown size={14} className={`text-zinc-500 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+              <ChevronDown size={14} color="#71717a" />
             </button>
 
             {isOpen && (
-              <div className="absolute right-0 mt-2 w-64 bg-[#111116] border border-zinc-800 rounded-lg shadow-2xl py-2 flex flex-col font-mono text-xs">
-                <button onClick={handleCopy} className="flex items-center justify-between px-4 py-3 text-zinc-300 hover:text-white hover:bg-zinc-800/50 transition-colors border-b border-zinc-800 mb-1">
-                  <div className="flex items-center gap-3">
-                    <Wallet size={14} className="text-[#00FF41]"/> 
-                    <div className="flex flex-col text-left">
-                      <span className="text-[9px] text-zinc-500 uppercase">Wallet</span>
-                      <span className="text-xs">{address.slice(0, 6)}...{address.slice(-6)}</span>
+              <div style={{ position: 'absolute', right: 0, top: '100%', marginTop: '8px', width: '256px', backgroundColor: '#111116', border: '1px solid #222228', borderRadius: '8px', padding: '8px 0', boxShadow: '0 10px 25px rgba(0,0,0,0.5)' }}>
+                <button onClick={handleCopy} style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', backgroundColor: 'transparent', border: 'none', borderBottom: '1px solid #222228', cursor: 'pointer', textAlign: 'left' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <Wallet size={14} color="#00FF41" /> 
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      <span style={{ fontSize: '9px', color: '#71717a', textTransform: 'uppercase' }}>Wallet</span>
+                      <span style={{ color: 'white', fontSize: '12px' }}>{address.slice(0, 6)}...{address.slice(-6)}</span>
                     </div>
                   </div>
-                  {copied ? <Check size={14} className="text-[#00FF41]"/> : <Copy size={14} className="text-zinc-500" />}
+                  {copied ? <Check size={14} color="#00FF41"/> : <Copy size={14} color="#71717a" />}
                 </button>
 
-                <Link href="/profile" className="flex items-center gap-3 px-4 py-2 text-zinc-300 hover:text-white hover:bg-zinc-800/50 transition-colors">
-                  <User size={14} /> Profile & Clan
+                <Link href="/profile" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 16px', color: '#d4d4d8', textDecoration: 'none', fontSize: '12px' }}>
+                  <User size={14} /> Profile
                 </Link>
-                <Link href="/settings" className="flex items-center gap-3 px-4 py-2 text-zinc-300 hover:text-white hover:bg-zinc-800/50 transition-colors">
+                <Link href="/settings" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 16px', color: '#d4d4d8', textDecoration: 'none', fontSize: '12px' }}>
                   <Settings size={14} /> Settings
                 </Link>
-                <div className="h-px bg-zinc-800 my-1" />
-                <button onClick={logout} className="flex items-center gap-3 px-4 py-2 text-red-400 hover:text-red-300 hover:bg-red-950/30 transition-colors text-left">
+                <div style={{ height: '1px', backgroundColor: '#222228', margin: '4px 0' }} />
+                <button onClick={logout} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 16px', color: '#f87171', backgroundColor: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left', fontSize: '12px' }}>
                   <LogOut size={14} /> Disconnect
                 </button>
               </div>
