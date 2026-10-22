@@ -39,20 +39,20 @@ export default function PortfolioChart() {
 
     const areaSeries = chart.addSeries(AreaSeries, {
       lineColor: '#00FF41',
-      topColor: 'rgba(0, 255, 65, 0.3)',
+      topColor: 'rgba(0, 255, 65, 0.2)',
       bottomColor: 'rgba(0, 255, 65, 0)',
       lineWidth: 2,
       priceFormat: { type: 'price', precision: 2, minMove: 0.01 },
     });
 
-    // Generate smooth upward mock data
     const data = [];
     let value = 1000.00;
-    for (let i = 0; i < 60; i++) {
-      value += (Math.random() - 0.3) * 50;
+    for (let i = 0; i < 30; i++) {
+      // Smoother upward trend with slight pullbacks
+      value += (Math.random() - 0.35) * 40;
       data.push({ 
-        time: (Math.floor(Date.now() / 1000) - (60 - i) * 86400) as UTCTimestamp, 
-        value: Math.max(value, 500) 
+        time: (Math.floor(Date.now() / 1000) - (30 - i) * 86400) as UTCTimestamp, 
+        value: Math.max(value, 1000) 
       });
     }
     
@@ -62,5 +62,5 @@ export default function PortfolioChart() {
     return () => { chart.remove(); };
   }, []);
 
-  return <div ref={chartContainerRef} className="w-full h-full min-h-[200px]" />;
+  return <div ref={chartContainerRef} className="w-full h-full min-h-[250px]" />;
 }
