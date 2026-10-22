@@ -5,7 +5,7 @@ import { Compass, Flame, Award, Users, Zap, Box } from 'lucide-react';
 
 const SECTIONS = [
   { label: 'TRADE', items: [
-      { href: '/dark-pools', label: 'Trending', icon: Flame },
+      { href: '/dark-pools', label: 'Explore', icon: Flame },
       { href: '/launch', label: 'Launch', icon: Zap },
       { href: '/terminal', label: 'Terminal', icon: Compass },
   ]},

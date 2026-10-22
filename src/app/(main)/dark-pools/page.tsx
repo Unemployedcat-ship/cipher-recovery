@@ -1,25 +1,86 @@
 'use client';
-import Link from 'next/link';
-import { Lock, ShieldCheck, Zap, Activity, Server, Cpu, Terminal, ShieldAlert, Wifi, Crosshair, Database } from 'lucide-react';
 
-export default function DarkPoolsPage() {
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { createClient } from '@supabase/supabase-js';
+import { Lock, Flame, Rocket, TrendingUp, ShieldCheck, ArrowUpRight, BarChart3 } from 'lucide-react';
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
+
+type Tab = 'pre' | 'post' | 'trending';
+
+export default function ExplorePage() {
+  const [activeTab, setActiveTab] = useState<Tab>('pre');
+  const [tokens, setTokens] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // 1. Initial Fetch
+    const fetchTokens = async () => {
+      const { data, error } = await supabase
+        .from('tokens')
+        .select('*, auctions(*)')
+        .order('created_at', { ascending: false });
+      
+      if (!error && data) setTokens(data);
+      setLoading(false);
+    };
+    fetchTokens();
+
+    // 2. Realtime Listener (Auto-inject new tokens)
+    const channel = supabase
+      .channel('explore_realtime')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'tokens' }, (payload) => {
+        if (payload.eventType === 'INSERT') {
+          setTokens(prev => [payload.new, ...prev]);
+        }
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  }, []);
+
+  // Mock data fallback for UI demonstration if DB is empty
+  const mockData = [
+    { id: '1', name: 'Unemployed Cat', symbol: 'UCAT', status: 'active', market_cap: 0, volume_24h: 42000, phase: 'pre' },
+    { id: '2', name: 'FairDegens', symbol: 'FAIR', status: 'graduated', market_cap: 1200000, volume_24h: 850000, phase: 'post' },
+    { id: '3', name: 'Doge Killer', symbol: 'DOGEK', status: 'graduated', market_cap: 890000, volume_24h: 120000, phase: 'post' },
+  ];
+
+  const displayTokens = tokens.length > 0 ? tokens : mockData;
+
+  // Categorization Logic
+  const filteredTokens = displayTokens.filter((t: any) => {
+    const isGraduated = t.status === 'graduated' || t.phase === 'post';
+    if (activeTab === 'pre') return !isGraduated;
+    if (activeTab === 'post') return isGraduated;
+    return true; // For trending, we show all, but will sort below
+  });
+
+  if (activeTab === 'trending') {
+    filteredTokens.sort((a, b) => (b.volume_24h || 0) - (a.volume_24h || 0));
+  }
+
   return (
-    <div className="w-full min-h-full p-4 lg:p-6 flex flex-col gap-4 font-mono text-zinc-300 bg-[#050505]">
+    <div className="w-full max-w-[1600px] mx-auto p-4 lg:p-6 flex flex-col gap-6 font-mono text-zinc-300 bg-[#050505]">
       
       {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-zinc-800 pb-4 shrink-0 relative gap-4">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end border-b border-zinc-800 pb-6 gap-4 relative">
         <div className="absolute bottom-0 left-0 w-1/4 h-[2px] bg-gradient-to-r from-[#00FF41] to-transparent"></div>
         <div>
-          <div className="flex items-center gap-2 text-[9px] tracking-[0.3em] text-[#00FF41] mb-1 font-black">
-            <Lock className="h-3 w-3" /> FHE SEALED-BID AUCTIONS
+          <div className="flex items-center gap-2 text-[9px] tracking-[0.3em] text-[#00FF41] mb-2 font-black">
+            <Flame className="h-3 w-3" /> LIVE ECOSYSTEM
           </div>
-          <h1 className="text-2xl font-black tracking-tight text-white uppercase flex items-center gap-3">
-            DARK POOLS 
+          <h1 className="text-3xl font-black tracking-tight text-white uppercase flex items-center gap-3">
+            EXPLORE
             <span className="text-[9px] bg-[#00FF41]/10 text-[#00FF41] px-2 py-0.5 rounded border border-[#00FF41]/30">LIVE_SYS</span>
           </h1>
         </div>
-        <Link href="/launch" className="rounded-sm bg-[#00FF41] px-6 py-2.5 text-[10px] font-black text-black hover:bg-[#00e03a] transition-all shadow-[0_0_20px_rgba(0,255,65,0.2)] flex items-center gap-2 whitespace-nowrap">
-          <Zap size={14} /> INITIALIZE POOL
+        <Link href="/launch" className="rounded-sm bg-[#00FF41] px-6 py-3 text-xs font-black text-black hover:bg-[#00e03a] transition-all shadow-[0_0_20px_rgba(0,255,65,0.2)] flex items-center gap-2">
+          <Rocket size={16} /> LAUNCH TOKEN
         </Link>
       </div>
 
@@ -27,135 +88,94 @@ export default function DarkPoolsPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 shrink-0">
         <div className="border border-zinc-800 bg-[#09090B] p-4 rounded-sm relative overflow-hidden group">
           <div className="flex justify-between items-center mb-2">
-            <div className="text-[9px] text-zinc-500 font-black tracking-widest flex items-center gap-1">
-              <Activity size={10} /> 24H VOLUME
-            </div>
-            <div className="h-1.5 w-1.5 bg-[#00FF41] rounded-full animate-pulse shadow-[0_0_5px_#00FF41]"></div>
+            <div className="text-[9px] text-zinc-500 font-black tracking-widest flex items-center gap-1"><BarChart3 size={10} /> TOTAL VOLUME</div>
+            <div className="h-1.5 w-1.5 bg-[#00FF41] rounded-full animate-pulse"></div>
           </div>
-          <div className="text-2xl font-black text-white">$0.00</div>
-          {/* Mini Chart */}
-          <div className="absolute bottom-0 right-0 flex items-end gap-1 opacity-20 group-hover:opacity-50 transition-opacity pr-2 pb-2">
-             {[10, 20, 15, 30, 25, 40].map((val, j) => (
-               <div key={j} className="w-1.5 bg-[#00FF41]" style={{ height: val + 'px' }}></div>
-             ))}
-          </div>
-          <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-[#00FF41]/50 to-transparent"></div>
+          <div className="text-2xl font-black text-white">$4,209,690</div>
         </div>
-        
         <div className="border border-zinc-800 bg-[#09090B] p-4 rounded-sm relative overflow-hidden group">
           <div className="flex justify-between items-center mb-2">
-            <div className="text-[9px] text-zinc-500 font-black tracking-widest flex items-center gap-1">
-              <Server size={10} /> ACTIVE POOLS
-            </div>
-            <div className="text-[8px] text-zinc-600 font-mono border border-zinc-800 px-1 rounded bg-[#050505]">STANDBY</div>
+            <div className="text-[9px] text-zinc-500 font-black tracking-widest flex items-center gap-1"><Lock size={10} /> ACTIVE POOLS</div>
           </div>
-          <div className="text-2xl font-black text-[#00FF41]">0</div>
-          <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-[#00FF41]/50 to-transparent"></div>
+          <div className="text-2xl font-black text-[#00FF41]">{displayTokens.filter((t:any) => t.status !== 'graduated').length}</div>
         </div>
-
         <div className="border border-zinc-800 bg-[#09090B] p-4 rounded-sm relative overflow-hidden group">
           <div className="flex justify-between items-center mb-2">
-            <div className="text-[9px] text-zinc-500 font-black tracking-widest flex items-center gap-1">
-              <Cpu size={10} /> TOTAL BIDS
-            </div>
-            <div className="text-[8px] text-[#00FF41] font-mono border border-[#00FF41]/30 px-1 rounded bg-[#00FF41]/5 flex items-center gap-1"><Wifi size={8}/> 0ms</div>
+            <div className="text-[9px] text-zinc-500 font-black tracking-widest flex items-center gap-1"><TrendingUp size={10} /> TOTAL TOKENS</div>
           </div>
-          <div className="text-2xl font-black text-white">0</div>
-          <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-[#00FF41]/50 to-transparent"></div>
+          <div className="text-2xl font-black text-white">{displayTokens.length}</div>
         </div>
       </div>
 
-      {/* Main Command Console */}
-      <div className="flex-1 border border-zinc-800 bg-[#050505] rounded-sm relative flex flex-col lg:flex-row shadow-[inset_0_0_100px_rgba(0,0,0,0.9)] overflow-hidden min-h-[500px]">
-        
-        {/* Background Grid & Scanline */}
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(0,255,65,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,255,65,0.03)_1px,transparent_1px)] bg-[size:30px_30px] pointer-events-none"></div>
-        <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden opacity-20">
-           <div className="w-full h-[2px] bg-[#00FF41] animate-scan shadow-[0_0_30px_#00FF41]"></div>
-        </div>
+      {/* Tabs */}
+      <div className="flex items-center gap-2 border-b border-zinc-800 pb-2">
+        {[
+          { id: 'pre', label: 'Before Graduation', icon: Lock },
+          { id: 'post', label: 'After Graduation', icon: ShieldCheck },
+          { id: 'trending', label: 'Trending (Top Volume)', icon: Flame },
+        ].map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id as Tab)}
+            className={`flex items-center gap-2 px-4 py-2 text-xs font-black uppercase tracking-wider rounded-sm transition-all ${
+              activeTab === tab.id 
+                ? 'bg-[#00FF41]/10 text-[#00FF41] border border-[#00FF41]/30' 
+                : 'text-zinc-500 hover:text-white hover:bg-zinc-800/50 border border-transparent'
+            }`}
+          >
+            <tab.icon size={14} /> {tab.label}
+          </button>
+        ))}
+      </div>
 
-        {/* Left Column: Radar */}
-        <div className="w-full lg:w-1/2 flex items-center justify-center relative border-b lg:border-b-0 lg:border-r border-zinc-800/50 p-8 lg:p-12">
-          <div className="relative flex items-center justify-center w-full max-w-[350px] aspect-square">
-            <div className="absolute inset-0 rounded-full" style={{ background: 'repeating-conic-gradient(from 0deg, #27272a 0deg 1deg, transparent 1deg 15deg)' }}>
-              <div className="absolute inset-[2px] bg-[#050505] rounded-full"></div>
-            </div>
-            <div className="absolute inset-[8%] border border-zinc-800 rounded-full">
-              <div className="absolute top-1/2 -left-1 w-2 h-2 bg-[#00FF41] rounded-full shadow-[0_0_10px_#00FF41]"></div>
-            </div>
-            <div className="absolute inset-[20%] border border-dashed border-[#00FF41]/30 rounded-full animate-[spin_20s_linear_infinite]"></div>
-            <div className="absolute inset-[35%] border border-[#00FF41]/50 rounded-full animate-[spin_10s_linear_infinite_reverse] border-t-[#00FF41] border-l-[#00FF41]"></div>
-            <div className="absolute w-[110%] h-[1px] bg-gradient-to-r from-transparent via-[#00FF41]/40 to-transparent"></div>
-            <div className="absolute h-[110%] w-[1px] bg-gradient-to-b from-transparent via-[#00FF41]/40 to-transparent"></div>
-            <div className="h-[30%] w-[30%] bg-[#09090B] border-2 border-[#00FF41] relative z-10 shadow-[0_0_40px_rgba(0,255,65,0.2)] flex items-center justify-center overflow-hidden"
-                 style={{ clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)' }}>
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(0,255,65,0.2)_0%,_transparent_80%)] animate-pulse"></div>
-              <Crosshair className="h-[40%] w-[40%] text-[#00FF41] relative z-10 drop-shadow-[0_0_10px_rgba(0,255,65,0.8)]" />
-            </div>
-            <div className="absolute top-[10%] left-[80%] text-[8px] text-[#00FF41]/50 font-mono">SYS.OP.001</div>
-            <div className="absolute bottom-[10%] left-[10%] text-[8px] text-[#00FF41]/50 font-mono">FHE.SYS.ON</div>
+      {/* Token Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        {loading ? (
+          <div className="col-span-full py-20 text-center text-zinc-500 animate-pulse">SCANNING BLOCKCHAIN...</div>
+        ) : filteredTokens.length === 0 ? (
+          <div className="col-span-full border border-zinc-800 border-dashed bg-[#09090B] rounded-sm flex flex-col items-center justify-center py-24">
+            <Lock className="h-10 w-10 text-zinc-700 mb-4" />
+            <h3 className="text-lg font-black text-white mb-1">NO TOKENS FOUND</h3>
+            <p className="text-xs text-zinc-500">Be the first to initialize a pool in this category.</p>
           </div>
-        </div>
-
-        {/* Right Column: Terminal */}
-        <div className="w-full lg:w-1/2 flex flex-col p-6 lg:p-10 relative z-10 min-h-0">
-          <div className="w-full max-w-md mx-auto flex flex-col h-full gap-6">
-            
-            {/* Terminal Window - Flex-1 to fill space properly */}
-            <div className="flex-1 bg-[#000000] border border-zinc-800 rounded-sm shadow-[0_0_30px_rgba(0,0,0,0.8)] flex flex-col overflow-hidden relative min-h-[250px]">
-              <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#00FF41]/50 to-transparent"></div>
+        ) : (
+          filteredTokens.map((token: any) => (
+            <Link href={`/dark-pools/${token.id}`} key={token.id} className="group border border-zinc-800 bg-[#09090B] rounded-sm p-4 hover:border-[#00FF41]/50 transition-all block relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-8 h-8 border-t border-r border-zinc-700 group-hover:border-[#00FF41] transition-colors"></div>
               
-              {/* Header */}
-              <div className="bg-[#0a0a0f] border-b border-zinc-800 px-4 py-2 flex items-center justify-between shrink-0">
-                <div className="flex items-center gap-2">
-                  <div className="w-2.5 h-2.5 rounded-full bg-red-500/80"></div>
-                  <div className="w-2.5 h-2.5 rounded-full bg-amber-500/80"></div>
-                  <div className="w-2.5 h-2.5 rounded-full bg-[#00FF41]/80"></div>
-                  <span className="text-[9px] text-zinc-500 ml-2 flex items-center gap-1 font-bold"><Terminal size={10}/> sys_console.log</span>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="h-10 w-10 bg-zinc-800 border border-zinc-700 text-[10px] flex items-center justify-center font-bold text-zinc-400 group-hover:text-[#00FF41] group-hover:border-[#00FF41] transition-colors rounded-sm">
+                  {token.symbol?.slice(0,2) || '??'}
                 </div>
-                <div className="text-[9px] text-[#00FF41] font-mono flex items-center gap-1">
-                  <div className="h-1.5 w-1.5 bg-[#00FF41] rounded-full animate-pulse"></div> LIVE
+                <div>
+                  <div className="font-bold text-white text-sm">{token.name}</div>
+                  <div className="text-[10px] text-zinc-500 font-mono">${token.symbol}</div>
+                </div>
+                <div className="ml-auto text-right">
+                  <div className="text-[10px] text-zinc-500 font-bold mb-0.5">STATUS</div>
+                  <div className={`text-[9px] font-black px-2 py-0.5 rounded border ${
+                    token.status === 'graduated' ? 'bg-[#00FF41]/10 text-[#00FF41] border-[#00FF41]/30' : 'bg-amber-500/10 text-amber-500 border-amber-500/30'
+                  }`}>
+                    {token.status === 'graduated' ? 'LIVE' : 'PRE-GRAD'}
+                  </div>
                 </div>
               </div>
-              
-              {/* Body */}
-              <div className="p-4 text-[11px] text-zinc-400 font-mono flex-1 overflow-y-auto leading-relaxed space-y-2">
-                <p><span className="text-zinc-600">[SYS]</span> Init dark pool protocol...</p>
-                <p><span className="text-zinc-600">[SYS]</span> FHE encryption active. Snipers neutralized.</p>
-                <p><span className="text-zinc-600">[SCAN]</span> Searching blocks for active pools...</p>
-                <p><span className="text-zinc-600">[RSLT]</span> <span className="text-amber-500 font-bold">0 POOLS FOUND</span></p>
-                <p><span className="text-zinc-600">[DATA]</span> Awaiting operator input...</p>
-                <br/>
-                <p className="text-[#00FF41] font-bold flex items-center gap-1">
-                  <span className="text-zinc-600">&gt;</span> AWAITING INITIALIZATION<span className="animate-pulse inline-block w-2 h-3 bg-[#00FF41] ml-1"></span>
-                </p>
-              </div>
-            </div>
-            
-            {/* Launch Button - Pinned to bottom of the flex container */}
-            <div className="shrink-0 space-y-4">
-              <Link href="/launch" className="w-full rounded-sm bg-[#00FF41] px-6 py-4 text-xs font-black text-black hover:bg-[#00e03a] transition-all duration-200 flex items-center justify-center gap-2 group shadow-[0_0_20px_rgba(0,255,65,0.2)]">
-                <Zap size={16} className="group-hover:animate-bounce" /> INITIALIZE PROTOCOL
-              </Link>
-              <div className="flex items-center justify-center gap-2 text-[9px] text-zinc-500 font-bold tracking-widest uppercase">
-                 <ShieldAlert size={12} className="text-amber-500"/> System standby. No active bids.
-              </div>
-            </div>
-            
-          </div>
-        </div>
 
-        {/* Footer Status Bar */}
-        <div className="absolute bottom-0 left-0 w-full bg-[#09090B] border-t border-zinc-800 px-4 py-1.5 flex justify-between items-center text-[9px] text-zinc-500 font-mono tracking-wider z-20">
-          <div className="flex items-center gap-4">
-            <span className="flex items-center gap-1 text-[#00FF41]"><Lock size={10}/> FHE ACTIVE</span>
-            <span className="hidden md:flex items-center gap-1"><Database size={10}/> DEVNET</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="h-1.5 w-1.5 bg-[#00FF41] rounded-full animate-pulse"></span>
-            <span>CONNECTION SECURE</span>
-          </div>
-        </div>
+              <div className="grid grid-cols-2 gap-4 border-t border-zinc-800/50 pt-3">
+                <div>
+                  <div className="text-[9px] text-zinc-600 font-black tracking-widest mb-1">MARKET CAP</div>
+                  <div className="text-sm font-bold text-white">${(token.market_cap || 0).toLocaleString()}</div>
+                </div>
+                <div className="text-right">
+                  <div className="text-[9px] text-zinc-600 font-black tracking-widest mb-1">24H VOLUME</div>
+                  <div className="text-sm font-bold text-[#00FF41] flex items-center justify-end gap-1">
+                    <ArrowUpRight size={12}/> ${(token.volume_24h || 0).toLocaleString()}
+                  </div>
+                </div>
+              </div>
+            </Link>
+          ))
+        )}
       </div>
     </div>
   );
