@@ -1,6 +1,7 @@
 'use client';
 import { Activity, TrendingUp, Zap, ArrowUpRight, BarChart3, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
+import TradingChart from '@/components/TradingChart';
 
 export default function TerminalPage() {
   return (
@@ -30,54 +31,20 @@ export default function TerminalPage() {
         {/* Left Column: Chart & Table */}
         <div className="xl:col-span-2 flex flex-col gap-6">
           
-          {/* Chart Box */}
-          <div className="border border-zinc-800 bg-[#09090B] rounded-sm p-6 relative flex flex-col shadow-[0_0_20px_rgba(0,0,0,0.5)]">
-            <div className="flex justify-between items-start mb-6">
+          {/* Live Chart Box */}
+          <div className="border border-zinc-800 bg-[#09090B] rounded-sm p-6 relative flex flex-col shadow-[0_0_20px_rgba(0,0,0,0.5)] min-h-[400px]">
+            <div className="flex justify-between items-start mb-4">
               <div>
                 <div className="text-[10px] text-zinc-500 font-black tracking-widest">TOTAL PROTOCOL VOLUME (ALL TIME)</div>
                 <div className="text-3xl font-black text-white mt-1 flex items-baseline gap-2">
                   $4,209,690.00 <span className="text-xs text-[#00FF41] bg-[#00FF41]/10 px-1 rounded flex items-center"><ArrowUpRight size={10}/> 12.4%</span>
                 </div>
               </div>
-              <div className="flex gap-1">
-                {['1H', '1D', '1W', '1M'].map((tab, i) => (
-                  <span key={tab} className={`text-[10px] px-2 py-1 rounded-sm cursor-pointer font-bold transition-colors ${i === 0 ? 'bg-[#00FF41]/20 text-[#00FF41] border border-[#00FF41]/30' : 'text-zinc-500 hover:text-white'}`}>{tab}</span>
-                ))}
-              </div>
             </div>
             
-            {/* Chart Area */}
-            <div className="flex-1 relative min-h-[300px] border-l border-b border-zinc-800 flex">
-              {/* Y-Axis */}
-              <div className="absolute -left-8 top-0 bottom-0 flex flex-col justify-between text-[9px] text-zinc-600 font-mono text-right pr-2">
-                <span>$5M</span><span>$4M</span><span>$3M</span><span>$2M</span><span>$1M</span><span>$0</span>
-              </div>
-              
-              {/* Grid */}
-              <div className="absolute inset-0 flex flex-col justify-between">
-                {[1,2,3,4,5].map(i => <div key={i} className="w-full h-[1px] bg-zinc-800/40"></div>)}
-              </div>
-              <div className="absolute inset-0 flex justify-between">
-                {[1,2,3,4,5,6].map(i => <div key={i} className="h-full w-[1px] bg-zinc-800/40"></div>)}
-              </div>
-
-              {/* SVG Graph */}
-              <svg viewBox="0 0 100 50" className="w-full h-full preserve-3d relative z-10 mt-2">
-                <defs>
-                  <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#00FF41" stopOpacity="0.3" />
-                    <stop offset="100%" stopColor="#00FF41" stopOpacity="0" />
-                  </linearGradient>
-                </defs>
-                <path d="M 0 45 Q 20 40, 30 25 T 60 35 T 80 10 T 100 5 L 100 50 L 0 50 Z" fill="url(#chartGradient)" />
-                <path d="M 0 45 Q 20 40, 30 25 T 60 35 T 80 10 T 100 5" fill="none" stroke="#00FF41" strokeWidth="1.5" className="drop-shadow-[0_0_8px_rgba(0,255,65,0.6)]" />
-                <path d="M 0 48 Q 30 45, 50 30 T 100 15" fill="none" stroke="#FF00FF" strokeWidth="1" strokeDasharray="2 2" opacity="0.4" />
-              </svg>
-            </div>
-            
-            {/* X-Axis */}
-            <div className="flex justify-between text-[9px] text-zinc-600 font-mono mt-2 pl-2">
-              <span>00:00</span><span>04:00</span><span>08:00</span><span>12:00</span><span>16:00</span><span>20:00</span><span>24:00</span>
+            {/* The Live Chart Component */}
+            <div className="flex-1 w-full min-h-[300px]">
+              <TradingChart />
             </div>
           </div>
 
