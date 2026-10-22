@@ -49,8 +49,16 @@ export default function DarkPoolsPage() {
         <div className="absolute bottom-4 left-4 w-4 h-4 border-b-2 border-l-2 border-zinc-700"></div>
         <div className="absolute bottom-4 right-4 w-4 h-4 border-b-2 border-r-2 border-zinc-700"></div>
 
-        <div className="h-20 w-20 bg-[#111116] border border-zinc-800 rounded-sm flex items-center justify-center mb-6">
+        <div className="relative mb-6">
+          {/* Targeting Reticle Background */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20">
+             <div className="w-48 h-48 border border-[#00FF41] rounded-full border-dashed animate-[spin_10s_linear_infinite]"></div>
+             <div className="absolute w-56 h-[1px] bg-[#00FF41]"></div>
+             <div className="absolute h-56 w-[1px] bg-[#00FF41]"></div>
+          </div>
+          <div className="h-20 w-20 bg-[#111116] border border-zinc-800 rounded-sm flex items-center justify-center relative z-10 shadow-[0_0_30px_rgba(0,255,65,0.2)]">
           <ShieldCheck className="h-10 w-10 text-[#00FF41]" />
+          </div>
         </div>
         
         <h2 className="text-2xl font-black text-white mb-2 uppercase tracking-wider">No Active Dark Pools</h2>
