@@ -10,7 +10,7 @@ const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Cipher Terminal | Pro Memecoin Launchpad",
+  title: "FairDegens | Anti-Snipe Memecoin Launchpad",
   description: "Fair-launch memecoin launchpad with 0% rug risk.",
 };
 

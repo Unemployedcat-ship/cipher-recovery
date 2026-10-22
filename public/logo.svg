@@ -1,15 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <!-- Geometric Cyber Cat Head -->
-  <path d="M 20,40 L 20,20 L 40,35 C 45,32 55,32 60,35 L 80,20 L 80,40 C 90,50 90,70 80,85 C 65,100 35,100 20,85 C 10,70 10,50 20,40 Z" fill="#0A0A0F" stroke="#00FF41" stroke-width="4" stroke-linejoin="round"/>
-  
+  <!-- Cyber Shield Base -->
+  <path d="M 15,30 L 35,15 L 50,5 L 65,15 L 85,30 L 75,80 L 50,95 L 25,80 Z" fill="#0A0A0F" stroke="#00FF41" stroke-width="4" stroke-linejoin="round"/>
+  <!-- Cat Ears -->
+  <polygon points="25,20 20,5 40,15" fill="#0A0A0F" stroke="#00FF41" stroke-width="4" stroke-linejoin="round"/>
+  <polygon points="75,20 80,5 60,15" fill="#0A0A0F" stroke="#00FF41" stroke-width="4" stroke-linejoin="round"/>
   <!-- Laser Eyes (Magenta) -->
-  <polygon points="30,50 45,55 30,60" fill="#FF00FF" />
-  <polygon points="70,50 55,55 70,60" fill="#FF00FF" />
-  
-  <!-- Cyber Whiskers/Terminal lines -->
-  <line x1="10" y1="65" x2="25" y2="65" stroke="#00FF41" stroke-width="2" />
-  <line x1="90" y1="65" x2="75" y2="65" stroke="#00FF41" stroke-width="2" />
-  
+  <polygon points="30,45 45,50 30,55" fill="#FF00FF" />
+  <polygon points="70,45 55,50 70,55" fill="#FF00FF" />
   <!-- Nose -->
-  <polygon points="50,65 45,70 55,70" fill="#00FF41" />
+  <polygon points="45,70 55,70 50,78" fill="#00FF41" />
 </svg>

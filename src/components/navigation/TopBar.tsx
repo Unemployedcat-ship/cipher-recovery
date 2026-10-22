@@ -80,12 +80,17 @@ export function TopBar() {
 
   return (
     <div className="flex items-center justify-between px-6 py-3 border-b border-white/5 bg-[#09090B] relative z-50">
-      <Link href="/" className="flex items-center gap-2">
-        <div className="w-6 h-6 rounded bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center shadow-[0_0_15px_rgba(34,211,238,0.5)]">
-          <Shield size={14} className="text-black" />
+      
+      <Link href="/" className="flex items-center gap-3">
+        <img src="/logo.svg" alt="FairDegens Logo" className="h-8 w-8" />
+        <div className="flex flex-col leading-none">
+          <span className="font-mono text-xl text-white font-bold tracking-widest">
+            FAIR<span className="text-[#00FF41]">//</span>DEGENS
+          </span>
+          <span className="text-[8px] text-[#00FF41] tracking-[0.3em] mt-1 font-mono">ANTI-SNIPE PROTOCOL</span>
         </div>
-        <span className="font-mono text-lg text-white font-bold tracking-widest">FAIR<span className="text-[#00FF41]">DEGENS</span></span>
       </Link>
+
 
       <div className="flex items-center gap-4">
         {!authenticated ? (
