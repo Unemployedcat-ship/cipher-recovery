@@ -12,7 +12,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   return (
     <ClientProviders>
       <LegalGate>
-        <div className="flex flex-col h-screen overflow-hidden bg-[#050505] text-white font-mono">
+        <div className="flex flex-col h-screen overflow-hidden bg-[#050505] bg-grid text-white font-mono">
           <TickerTape />
           <TopBar onMenuClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} isMenuOpen={isMobileMenuOpen} />
           
