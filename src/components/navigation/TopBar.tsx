@@ -84,7 +84,7 @@ export function TopBar() {
         <div className="w-6 h-6 rounded bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center shadow-[0_0_15px_rgba(34,211,238,0.5)]">
           <Shield size={14} className="text-black" />
         </div>
-        <span className="font-mono text-lg text-white font-bold tracking-widest">CIPHER<span className="text-cyan-400">PROTOCOL</span></span>
+        <span className="font-mono text-lg text-white font-bold tracking-widest">FAIR<span className="text-cyan-400">DEGENS</span></span>
       </Link>
 
       <div className="flex items-center gap-4">

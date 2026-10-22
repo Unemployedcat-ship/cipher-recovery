@@ -35,7 +35,7 @@ export function Sidebar() {
     <aside className="w-64 border-r border-[var(--border-subtle)] bg-[var(--bg-surface)] flex flex-col z-20 h-screen sticky top-0">
       <Link href="/" className="px-6 py-6 border-b border-[var(--border-subtle)] block">
         <div className="font-mono text-xl font-bold tracking-tight text-white">
-          CIPHER<span className="text-[var(--accent-cyan)]">//</span>TERMINAL
+          FAIR<span className="text-[var(--accent-cyan)]">//</span>DEGENS
         </div>
       </Link>
 
