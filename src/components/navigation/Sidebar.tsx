@@ -32,28 +32,28 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside style={{ width: '260px', backgroundColor: '#09090B', borderRight: '1px solid #222228', display: 'flex', flexDirection: 'column', flexShrink: 0 }}>
-      <nav style={{ flex: 1, overflowY: 'auto', paddingTop: '24px', paddingBottom: '24px' }}>
+    <aside className="w-64 border-r border-zinc-800 bg-[#09090B] flex flex-col z-20 h-full flex-shrink-0">
+      <nav className="flex-1 overflow-y-auto py-6">
         {SECTIONS.map((section) => (
-          <div key={section.label} style={{ marginBottom: '24px' }}>
-            <div style={{ paddingLeft: '24px', marginBottom: '8px', fontSize: '10px', color: '#71717a', letterSpacing: '0.1em', fontWeight: 'bold' }}>
+          <div key={section.label} className="mb-6">
+            <div className="px-6 mb-2 text-[10px] text-zinc-500 uppercase tracking-[0.2em] font-bold">
               {section.label}
             </div>
-            <div style={{ paddingLeft: '12px', paddingRight: '12px' }}>
+            <div className="px-3">
               {section.items.map((item) => {
                 const isActive = pathname === item.href;
                 return (
                   <Link
                     key={item.href}
                     href={item.href}
-                    style={{
-                      display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 12px', borderRadius: '6px', marginBottom: '4px', textDecoration: 'none', fontSize: '14px',
-                      backgroundColor: isActive ? 'rgba(0, 255, 65, 0.1)' : 'transparent',
-                      color: isActive ? '#00FF41' : '#a1a1aa',
-                    }}
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-md mb-1 transition-colors text-sm ${
+                      isActive
+                        ? 'bg-[#00FF41]/10 text-[#00FF41]'
+                        : 'text-zinc-400 hover:text-white hover:bg-zinc-800/50'
+                    }`}
                   >
                     <item.icon size={16} />
-                    <span>{item.label}</span>
+                    <span className="font-mono">{item.label}</span>
                   </Link>
                 );
               })}
