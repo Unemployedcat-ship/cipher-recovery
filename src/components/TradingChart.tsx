@@ -6,6 +6,7 @@ import {
   CandlestickSeries,
   LineSeries,
   HistogramSeries,
+  ColorType,
   type IChartApi,
   type ISeriesApi,
   type UTCTimestamp,
@@ -24,13 +25,24 @@ export default function TradingChart() {
     if (!chartContainerRef.current) return;
 
     const chart = createChart(chartContainerRef.current, {
-      layout: { background: { color: 'transparent' }, textColor: '#94a3b8' },
+      layout: { 
+        background: { type: ColorType.Solid, color: 'transparent' }, 
+        textColor: '#94a3b8',
+        fontFamily: 'monospace',
+      },
       grid: {
         vertLines: { color: 'rgba(148, 163, 184, 0.08)' },
         horzLines: { color: 'rgba(148, 163, 184, 0.08)' },
       },
-      rightPriceScale: { borderColor: 'rgba(148, 163, 184, 0.2)' },
-      timeScale: { borderColor: 'rgba(148, 163, 184, 0.2)', timeVisible: true, secondsVisible: false },
+      rightPriceScale: { 
+        borderColor: 'rgba(148, 163, 184, 0.2)',
+        scaleMargins: { top: 0.1, bottom: 0.2 }, // Leave room for volume
+      },
+      timeScale: { 
+        borderColor: 'rgba(148, 163, 184, 0.2)', 
+        timeVisible: true, 
+        secondsVisible: false,
+      },
       autoSize: true,
       crosshair: {
         horzLine: { visible: true, labelVisible: true, color: '#00FF41' },
@@ -44,45 +56,59 @@ export default function TradingChart() {
       upColor: '#00FF41', downColor: '#ef4444',
       borderUpColor: '#00FF41', borderDownColor: '#ef4444',
       wickUpColor: '#00FF41', wickDownColor: '#ef4444',
+      priceFormat: { type: 'price', precision: 2, minMove: 0.01 },
     });
     candlestickSeriesRef.current = candlestickSeries;
 
-    const lineSeries = chart.addSeries(LineSeries, { color: '#00FF41', lineWidth: 2 });
+    const lineSeries = chart.addSeries(LineSeries, { 
+      color: '#00FF41', 
+      lineWidth: 2,
+      priceFormat: { type: 'price', precision: 2, minMove: 0.01 },
+    });
     lineSeriesRef.current = lineSeries;
     lineSeries.applyOptions({ visible: false });
 
     const volumeSeries = chart.addSeries(HistogramSeries, {
-      priceFormat: { type: 'volume' }, priceScaleId: 'volume', color: 'rgba(0, 255, 65, 0.2)',
+      priceFormat: { type: 'volume' }, 
+      priceScaleId: 'volume', 
     });
     volumeSeriesRef.current = volumeSeries;
     chart.priceScale('volume').applyOptions({ scaleMargins: { top: 0.8, bottom: 0 } });
 
     const initialData = generateMockOHLCV(100);
+    
     candlestickSeries.setData(initialData);
     lineSeries.setData(initialData.map(d => ({ time: d.time, value: d.close })));
-    volumeSeries.setData(initialData.map(d => ({ time: d.time, value: d.volume, color: d.close >= d.open ? 'rgba(0, 255, 65, 0.3)' : 'rgba(239, 68, 68, 0.3)' })));
+    volumeSeries.setData(initialData.map(d => ({ 
+      time: d.time, 
+      value: d.volume, 
+      color: d.close >= d.open ? 'rgba(0, 255, 65, 0.4)' : 'rgba(239, 68, 68, 0.4)' 
+    })));
 
     chart.timeScale().fitContent();
 
+    // Simulate live data pushing every 1.5 seconds
     const interval = setInterval(() => {
       const lastCandle = initialData[initialData.length - 1];
+      const move = (Math.random() - 0.5) * 5; // Fluctuate by up to $2.50
       const newCandle = {
         time: (lastCandle.time as number) + 60,
         open: lastCandle.close,
-        high: lastCandle.close + Math.random() * 0.000001,
-        low: lastCandle.close - Math.random() * 0.000001,
-        close: lastCandle.close + (Math.random() - 0.5) * 0.000002,
-        volume: Math.floor(Math.random() * 1000),
+        high: lastCandle.close + Math.random() * 3,
+        low: lastCandle.close - Math.random() * 3,
+        close: lastCandle.close + move,
+        volume: Math.floor(Math.random() * 5000) + 1000,
       };
       initialData.push(newCandle);
 
       candlestickSeries.update(newCandle);
       lineSeries.update({ time: newCandle.time, value: newCandle.close });
       volumeSeries.update({
-        time: newCandle.time, value: newCandle.volume,
-        color: newCandle.close >= newCandle.open ? 'rgba(0, 255, 65, 0.3)' : 'rgba(239, 68, 68, 0.3)',
+        time: newCandle.time, 
+        value: newCandle.volume,
+        color: newCandle.close >= newCandle.open ? 'rgba(0, 255, 65, 0.4)' : 'rgba(239, 68, 68, 0.4)',
       });
-    }, 2000);
+    }, 1500);
 
     return () => { clearInterval(interval); chart.remove(); };
   }, []);
@@ -100,25 +126,30 @@ export default function TradingChart() {
 
   return (
     <div className="flex flex-col h-full w-full">
-      <div className="flex justify-end gap-2 mb-2">
+      <div className="flex justify-end gap-2 mb-2 z-10">
         <button onClick={() => setChartType('candlestick')} className={`px-3 py-1 text-[10px] font-bold rounded-sm transition-colors ${chartType === 'candlestick' ? 'bg-[#00FF41]/20 text-[#00FF41] border border-[#00FF41]/30' : 'text-zinc-500 hover:text-white'}`}>CANDLES</button>
         <button onClick={() => setChartType('line')} className={`px-3 py-1 text-[10px] font-bold rounded-sm transition-colors ${chartType === 'line' ? 'bg-[#00FF41]/20 text-[#00FF41] border border-[#00FF41]/30' : 'text-zinc-500 hover:text-white'}`}>LINE</button>
       </div>
-      <div ref={chartContainerRef} className="flex-1 w-full" />
+      <div ref={chartContainerRef} className="flex-1 w-full min-h-[300px]" />
     </div>
   );
 }
 
 function generateMockOHLCV(count: number) {
   const data = [];
-  let price = 0.00004;
+  let price = 125.00; // Realistic starting price
   for (let i = 0; i < count; i++) {
     const open = price;
-    const close = price + (Math.random() - 0.5) * 0.000002;
-    const high = Math.max(open, close) + Math.random() * 0.000001;
-    const low = Math.min(open, close) - Math.random() * 0.000001;
-    const volume = Math.floor(Math.random() * 1000);
-    data.push({ time: (Math.floor(Date.now() / 1000) - (count - i) * 60) as UTCTimestamp, open, high, low, close, volume });
+    const move = (Math.random() - 0.5) * 5; // up to $2.50 move
+    const close = open + move;
+    const high = Math.max(open, close) + Math.random() * 2;
+    const low = Math.min(open, close) - Math.random() * 2;
+    const volume = Math.floor(Math.random() * 5000) + 500;
+    
+    data.push({ 
+      time: (Math.floor(Date.now() / 1000) - (count - i) * 60) as UTCTimestamp, 
+      open, high, low, close, volume 
+    });
     price = close;
   }
   return data;
